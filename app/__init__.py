@@ -20,7 +20,7 @@ def init_app(config_name):
     app.config.from_object(config.get(config_name or 'default'))
 
     # Import models
-    from .models import company, user_operator, user_driver, vehicles
+    from app.models import company, user_operator, user_driver, vehicles
 
     # Initialize extensions
     db.init_app(app)
@@ -30,8 +30,8 @@ def init_app(config_name):
 
     with app.app_context():
         # Import and register blueprints
-        from .auth import views as auth
-        from .api import routes
+        from app.auth import views as auth
+        from app.api import routes
 
         app.register_blueprint(auth.auth)
         app.register_blueprint(routes.api)
