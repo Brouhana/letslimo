@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
+from flask_marshmallow import Marshmallow
 
 from config import config
 
@@ -11,6 +12,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
 bcrypt = Bcrypt()
+ma = Marshmallow()
 
 
 def init_app(config_name):
@@ -32,6 +34,7 @@ def init_app(config_name):
     migrate.init_app(app, db)
     jwt.init_app(app)
     bcrypt.init_app(app)
+    ma.init_app(app)
 
     with app.app_context():
         # Import and register blueprints
