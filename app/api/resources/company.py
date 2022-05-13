@@ -7,6 +7,7 @@ from flask import (
 from flask.views import MethodView
 
 from app.models.company import Company
+from app.api.schemas.company import CompanySchema
 
 
 class CompanyResource(MethodView):
@@ -14,9 +15,10 @@ class CompanyResource(MethodView):
         company = Company.query.filter_by(id=company_id).first()
 
         if company is None:
-            return jsonify({'msg': 'Company not found.'}), 404
+            return jsonify({'msg': 'Company not found.'}), 400
 
-        return "Get all users"
+        res = CompanySchema().dump(company).data
+        return jsonify(res), 200
 
     def post(self):
         return "Create a new user"
