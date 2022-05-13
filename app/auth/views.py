@@ -17,24 +17,26 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 @auth_bp.post('/login')
 def login():
     """
-    Authenticates a Operator user's credentials and returns tokens
+    Authenticates a user's credentials and returns tokens
     """
     if not request.is_json:
-        return jsonify({"msg": "Invalid request format"}), 400
+        return jsonify({'msg': 'Invalid request format.'}), 400
 
     email = request.json.get('email', None)
     password = request.json.get('password', None)
 
     if not email or not password:
-        return jsonify({"msg": "Email or password is empty."}), 400
+        return jsonify({'msg': 'Email or password is empty.'}), 400
 
     user = User.query.filter_by(email=email).first()
 
     if user is None or not check_password_hash(user.password, password):
-        return jsonify({"msg": "Incorrect email or password."}), 401
+        return jsonify({'msg': 'Incorrect email or password.'}), 401
 
-    access_token = create_access_token(identity=user.id)
-    refresh_token = create_refresh_token(identity=user.id)
+    access_token = create_access_token(
+        identity={'id': user.id, 'company': user.company_id})
+    refresh_token = create_refresh_token(
+        identity={'id': user.id, 'company': user.company_id})
 
     res = {"access_token": access_token, "refresh_token": refresh_token}
 
@@ -44,10 +46,27 @@ def login():
 @auth_bp.post('/register')
 def register():
     """
-    Registers a Operator user
+    TODO: Registers a user
     """
     if not request.is_json:
-        return jsonify({"msg": "Invalid request format"}), 400
+        return jsonify({'msg': 'Invalid request format'}), 400
+
+    email = request.json.get('email', None)
+    first_name = request.json.get('first_name', None)
+    last_name = request.json.get('last_name', None)
+    phone = request.json.get('phone', None)
+    password = request.json.get('password', None)
+    company_id = request.json.get('company_id', None)
+
+
+@auth_bp.post('/invite')
+def invite():
+    """
+    TODO: Invite a user
+    TODO: Integrate email sending with invite_code
+    """
+    if not request.is_json:
+        return jsonify({'msg': 'Invalid request format'}), 400
 
     account_zero = request.json.get('account_zero', None)
     email = request.json.get('email', None)
