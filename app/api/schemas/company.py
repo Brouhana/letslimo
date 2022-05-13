@@ -1,4 +1,3 @@
-from app.models.company import Company
 from app import ma
 
 
@@ -14,5 +13,5 @@ class CompanySchema(ma.Schema):
             'company_booking_email',
             'company_phone',
             'created_on',
-            'last_updated'
+            'last_updated',
         )
