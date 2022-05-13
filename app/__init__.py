@@ -20,7 +20,7 @@ def init_app(config_name):
     app.config.from_object(config.get(config_name or 'default'))
 
     # Import models
-    from app.models import company, user_operator, user_driver, vehicles
+    from app.models import company, member, driver, vehicle
 
     # Initialize extensions
     db.init_app(app)

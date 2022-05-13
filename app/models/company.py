@@ -14,13 +14,13 @@ class Company(db.Model):
     company_phone = db.Column(db.String(120), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
 
-    user_operators = db.relationship(
-        'OperatorUser', backref='company', lazy=True)
-    vehicles = db.relationship('Vehicle', backref='company', lazy=True)
-    user_drivers = db.relationship('DriverUser', backref='company', lazy=True)
-
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     last_updated = db.Column(db.DateTime, onupdate=db.func.now())
+
+    members = db.relationship(
+        'Member', backref='company', lazy=True)
+    vehicles = db.relationship('Vehicle', backref='company', lazy=True)
+    drivers = db.relationship('Driver', backref='company', lazy=True)
 
     def __repr__(self):
         return '<Company %s>' % self.id
