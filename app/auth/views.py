@@ -11,10 +11,10 @@ from flask_bcrypt import check_password_hash
 from app.models.member import Member
 
 
-auth = Blueprint('auth', __name__, url_prefix='/auth')
+auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-@auth.post('/login')
+@auth_bp.post('/login')
 def login():
     """
     Authenticates a Operator user's credentials and returns tokens
@@ -41,7 +41,7 @@ def login():
     return jsonify(res), 200
 
 
-@auth.post('/register')
+@auth_bp.post('/register')
 def register():
     """
     Registers a Operator user

@@ -31,10 +31,10 @@ def init_app(config_name):
 
     with app.app_context():
         # Import and register blueprints
-        from app.auth import views as auth
-        from app.api import routes
+        from app.auth import views as auth_views
+        from app.api import views as api_views
 
-        app.register_blueprint(auth.auth)
-        app.register_blueprint(routes.api)
+        app.register_blueprint(auth_views.auth_bp)
+        app.register_blueprint(api_views.api_bp)
 
         return app
