@@ -17,8 +17,8 @@ class Company(db.Model):
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     last_updated = db.Column(db.DateTime, onupdate=db.func.now())
 
-    members = db.relationship(
-        'Member', backref='company', lazy=True)
+    users = db.relationship(
+        'User', backref='company', lazy=True)
     vehicles = db.relationship('Vehicle', backref='company', lazy=True)
     drivers = db.relationship('Driver', backref='company', lazy=True)
 

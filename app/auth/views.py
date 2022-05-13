@@ -8,7 +8,7 @@ from flask_jwt_extended import (
 )
 from flask_bcrypt import check_password_hash
 
-from app.models.member import Member
+from app.models.user import User
 
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -28,7 +28,7 @@ def login():
     if not email or not password:
         return jsonify({"msg": "Email or password is empty."}), 400
 
-    user = Member.query.filter_by(email=email).first()
+    user = User.query.filter_by(email=email).first()
 
     if user is None or not check_password_hash(user.password, password):
         return jsonify({"msg": "Incorrect email or password."}), 401

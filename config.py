@@ -7,6 +7,7 @@ load_dotenv(path.join(BASE_DIR, '.env'))
 
 class Config(object):
     SECRET_KEY = environ.get('SECRET_KEY')
+    JWT_SECRET_KEY = environ.get('JWT_SECRET_KEY')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
