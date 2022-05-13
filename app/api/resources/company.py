@@ -1,7 +1,5 @@
 from flask import (
-    request,
     jsonify,
-    Blueprint,
     current_app as app
 )
 from flask.views import MethodView
@@ -15,16 +13,19 @@ class CompanyResource(MethodView):
         company = Company.query.filter_by(id=company_id).first()
 
         if company is None:
-            return jsonify({'msg': 'Company not found.'}), 400
+            return jsonify({'msg': 'Company not found.'}), 404
 
-        res = CompanySchema().dump(company).data
+        res = company_schema.dump(company)
         return jsonify(res), 200
 
     def post(self):
-        return "Create a new user"
+        return "Create company"
 
     def put(self, user_id):
         return "Update user"
 
     def delete(self, user_id):
         return "Delete user"
+
+
+company_schema = CompanySchema()
