@@ -5,8 +5,11 @@ class Vehicle(db.Model):
     __tablename__ = 'vehicles'
 
     id = db.Column(db.Integer, primary_key=True)
+
     company_id = db.Column(db.Integer, db.ForeignKey(
         'companies.id'), nullable=False)
+    company = db.relationship('Company', backref='vehicles', lazy=True)
+
     # Basic vehicle information
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text(), nullable=False)
@@ -15,6 +18,7 @@ class Vehicle(db.Model):
     exterior_color = db.Column(db.String(120), nullable=True)
     vin_number = db.Column(db.String(20), nullable=True)
     is_active = db.Column(db.Boolean, default=True)
+
     # General vehicle features
     has_air_conditioning = db.Column(db.Boolean, default=False)
     has_dance_pole = db.Column(db.Boolean, default=False)
@@ -26,6 +30,7 @@ class Vehicle(db.Model):
     has_trash_can = db.Column(db.Boolean, default=False)
     has_ice_chest = db.Column(db.Boolean, default=False)
     has_wheelchair_accessibility = db.Column(db.Boolean, default=False)
+
     # Vehicle media features
     has_aux = db.Column(db.Boolean, default=False)
     has_bluetooth = db.Column(db.Boolean, default=False)
@@ -36,12 +41,14 @@ class Vehicle(db.Model):
     has_wifi = db.Column(db.Boolean, default=False)
     has_tv = db.Column(db.Boolean, default=False)
     has_gaming_console = db.Column(db.Boolean, default=False)
+
     # Vehicle policies
     is_alcohol_allowed = db.Column(db.Boolean, default=False)
     is_smoking_allowed = db.Column(db.Boolean, default=False)
     is_pets_allowed = db.Column(db.Boolean, default=False)
     is_food_allowed = db.Column(db.Boolean, default=False)
     is_children_allowed = db.Column(db.Boolean, default=False)
+
     # Vehicle pricing
     min_total_base_rate = db.Column(db.Integer, nullable=True)
     deadhead_rate_per_mile = db.Column(db.Integer, nullable=True)

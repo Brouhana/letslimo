@@ -7,8 +7,11 @@ class UserInvite(db.Model):
     __tablename__ = 'user_invites'
 
     id = db.Column(db.Integer, primary_key=True)
+
     company_id = db.Column(db.Integer, db.ForeignKey(
         'companies.id'), nullable=False)
+    company = db.relationship('Company', backref='user_invites', lazy=True)
+
     is_owner = db.Column(db.Boolean, default=False, nullable=True)
     is_admin = db.Column(db.Boolean, default=False, nullable=True)
     is_member = db.Column(db.Boolean, default=False, nullable=True)

@@ -5,8 +5,11 @@ class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
+
     company_id = db.Column(db.Integer, db.ForeignKey(
         'companies.id'), nullable=False)
+    company = db.relationship('Company', backref='users', lazy=True)
+
     is_active = db.Column(db.Boolean, default=True)
     is_owner = db.Column(db.Boolean, default=False, nullable=True)
     is_admin = db.Column(db.Boolean, default=False, nullable=True)
@@ -22,6 +25,7 @@ class User(db.Model):
     DL_expr = db.Column(db.DateTime, nullable=True)
     notes = db.Column(db.Text(), nullable=True)
     password = db.Column(db.String(255), nullable=False)
+
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     last_updated = db.Column(db.DateTime, onupdate=db.func.now())
 
