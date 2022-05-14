@@ -21,5 +21,5 @@ api_bp.add_url_rule('/users/<user_id>',
                     view_func=user_view_func)
 
 api_bp.add_url_rule('/companies/<company_id>',
-                    methods=['GET', 'PUT'],
+                    methods=['GET', 'PUT', 'DELETE'],
                     view_func=company_view_func)

@@ -26,7 +26,11 @@ class CompanyResource(MethodView):
         return company_schema.dump(company), HTTPStatus.OK
 
     def delete(self, company_id: int):
-        return "Delete company by id"
+        # A 'small soft' delete,
+        # a company that is deleted will be marked as inactive
+        company = Company.query.get_or_404(company_id)
+        company.update({'is_active': False})
+        return 'Company disabled', HTTPStatus.OK
 
 
 company_schema = CompanySchema()
