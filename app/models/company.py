@@ -15,8 +15,8 @@ class Company(db.Model):
     company_booking_email = db.Column(db.String(120), nullable=False)
     company_phone = db.Column(db.String(120), nullable=False)
 
-    created_on = db.Column(db.DateTime, server_default=db.func.now())
-    last_updated = db.Column(db.DateTime, onupdate=db.func.now())
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
     def __repr__(self):
         return '<Company %s>' % self.id
