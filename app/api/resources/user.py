@@ -13,6 +13,3 @@ class UserResource(MethodView):
 
     def delete(self, user_id):
         return "Delete user"
-
-
-# https://github.com/PrettyPrinted/youtube_video_code/blob/master/2019/08/08/Flask%20REST%20API%20Example%20With%20Pluggable%20Views%20and%20MethodView/api_demo/app.py
