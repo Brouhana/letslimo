@@ -1,30 +1,30 @@
 from flask import (
+    request,
     jsonify,
     current_app as app
 )
 from flask.views import MethodView
 
+from app import db
 from app.models.company import Company
 from app.api.schemas.company import CompanySchema
 
 
 class CompanyResource(MethodView):
-    def get(self, company_id):
-        company = Company.query.filter_by(id=company_id).first()
-
-        if company is None:
-            return jsonify({'msg': 'Company not found.'}), 404
-
+    def get(self, company_id: int):
+        company = Company.query.get_or_404(company_id)
         res = company_schema.dump(company)
         return jsonify(res), 200
 
-    def post(self):
-        return "Create company"
+    def put(self, company_id: int):
+        company = Company.query.get_or_404(company_id)
+        # company = company_schema.load(request.json, instance=company)
 
-    def put(self, user_id):
-        return "Update user"
+        # db.session.commit()
 
-    def delete(self, user_id):
+        return company_schema.dump(company), 200
+
+    def delete(self, company_id: int):
         return "Delete user"
 
 

@@ -1,17 +1,7 @@
 from app import ma
+from app.models.company import Company
 
 
-class CompanySchema(ma.Schema):
+class CompanySchema(ma.SQLAlchemyAutoSchema):
     class Meta:
-        fields = (
-            'id',
-            'is_active',
-            'company_name',
-            'company_address',
-            'company_website_url',
-            'company_general_email',
-            'company_booking_email',
-            'company_phone',
-            'created_on',
-            'last_updated',
-        )
+        model = Company
