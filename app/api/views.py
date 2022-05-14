@@ -10,7 +10,7 @@ user_view_func = UserResource.as_view('users')
 company_view_func = CompanyResource.as_view('company')
 
 api_bp.add_url_rule('/company/<company_id>/users',
-                    methods=['POST', 'GET'],
+                    methods=['GET', 'POST'],
                     defaults={'user_id': None},
                     view_func=user_view_func)
 api_bp.add_url_rule('/company/<company_id>/users/<user_id>',
