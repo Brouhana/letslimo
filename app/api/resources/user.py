@@ -5,6 +5,7 @@ from flask import (
 )
 from flask.views import MethodView
 from http import HTTPStatus
+from flask_jwt_extended import jwt_required
 
 from app import db
 from app.models.company import Company
