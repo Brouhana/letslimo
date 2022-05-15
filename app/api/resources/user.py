@@ -27,7 +27,7 @@ class UserResource(MethodView):
             users = User.query.filter_by(
                 company_id=company_id, is_member=True).all()
 
-        return user_schema.dump(users), HTTPStatus.OK
+        return jsonify(user_schema.dump(users)), HTTPStatus.OK
 
     def post(self, company_id: int):
         if not request.is_json:

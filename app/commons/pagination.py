@@ -1,3 +1,6 @@
+# Pagination adapted from
+# https://github.com/karec/cookiecutter-flask-restful/blob/master/%7B%7Bcookiecutter.project_name%7D%7D/%7B%7Bcookiecutter.app_name%7D%7D/commons/pagination.py
+
 from flask import url_for, request
 
 DEFAULT_PAGE_SIZE = 50
