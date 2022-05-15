@@ -8,13 +8,26 @@ from http import HTTPStatus
 
 from app import db
 from app.models.company import Company
+from app.models.user import User
 from app.models.user_invites import UserInvite
+from app.api.schemas.user import UserSchema
 
 
 class UserResource(MethodView):
     def get(self, company_id: int, user_id: int):
-        args = request.args.get('user_type')
-        return args, HTTPStatus.OK
+        user_type = request.args.get('user_type')
+
+        company = Company.query.get_or_404(company_id)
+
+        if user_type == 'driver':
+            users = User.query.filter_by(
+                company_id=company_id, is_driver=True).all()
+
+        if user_type == 'member':
+            users = User.query.filter_by(
+                company_id=company_id, is_member=True).all()
+
+        return user_schema.dump(users), HTTPStatus.OK
 
     def post(self, company_id: int):
         if not request.is_json:
@@ -39,6 +52,9 @@ class UserResource(MethodView):
         notes = request.json.get('notes', None)
         # TODO: get requester's id
         invited_by_user_id = request.json.get('invited_by_user_id', None)
+
+        if email is None or first_name is None or last_name is None or phone is None:
+            return jsonify({'msg': 'Missing required fields.'}), HTTPStatus.BadRequest
 
         db.session.add(UserInvite(is_owner=is_owner,
                                   is_admin=is_admin,
@@ -65,3 +81,6 @@ class UserResource(MethodView):
 
     def delete(self, company_id: int, user_id: int):
         return "Delete user"
+
+
+user_schema = UserSchema(many=True)
