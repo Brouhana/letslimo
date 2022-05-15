@@ -22,11 +22,12 @@ class UserResource(MethodView):
 
         if user_type == 'driver':
             users = User.query.filter_by(company_id=company_id, is_driver=True)
-
-        if user_type == 'member':
+        elif user_type == 'member':
             users = User.query.filter_by(company_id=company_id, is_member=True)
+        else:
+            return jsonify({'msg': 'Invalid user type.'}), HTTPStatus.BAD_REQUEST
 
-        return paginate(users, users_schema)
+        return paginate(users, users_schema), HTTPStatus.OK
 
     def post(self, company_id: int):
         if not request.is_json:
