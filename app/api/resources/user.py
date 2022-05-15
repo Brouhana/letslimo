@@ -11,6 +11,7 @@ from app.models.company import Company
 from app.models.user import User
 from app.models.user_invites import UserInvite
 from app.api.schemas.user import UserSchema
+from app.commons.pagination import paginate
 
 
 class UserResource(MethodView):
@@ -20,14 +21,12 @@ class UserResource(MethodView):
         company = Company.query.get_or_404(company_id)
 
         if user_type == 'driver':
-            users = User.query.filter_by(
-                company_id=company_id, is_driver=True).all()
+            users = User.query.filter_by(company_id=company_id, is_driver=True)
 
         if user_type == 'member':
-            users = User.query.filter_by(
-                company_id=company_id, is_member=True).all()
+            users = User.query.filter_by(company_id=company_id, is_member=True)
 
-        return jsonify(user_schema.dump(users)), HTTPStatus.OK
+        return paginate(users, users_schema)
 
     def post(self, company_id: int):
         if not request.is_json:
@@ -83,4 +82,5 @@ class UserResource(MethodView):
         return "Delete user"
 
 
-user_schema = UserSchema(many=True)
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)
