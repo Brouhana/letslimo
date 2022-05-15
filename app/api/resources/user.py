@@ -16,18 +16,26 @@ from app.commons.pagination import paginate
 
 class UserResource(MethodView):
     def get(self, company_id: int, user_id: int):
-        user_type = request.args.get('user_type')
-
         company = Company.query.get_or_404(company_id)
 
-        if user_type == 'driver':
-            users = User.query.filter_by(company_id=company_id, is_driver=True)
-        elif user_type == 'member':
-            users = User.query.filter_by(company_id=company_id, is_member=True)
+        if user_id:
+            user = User.query.filter_by(
+                company_id=company_id, id=user_id).first()
+            res = user_schema.dump(user)
+            return jsonify(res), HTTPStatus.OK
         else:
-            return jsonify({'msg': 'Invalid user type.'}), HTTPStatus.BAD_REQUEST
+            user_type = request.args.get('user_type')
 
-        return paginate(users, users_schema), HTTPStatus.OK
+            if user_type == 'driver':
+                users = User.query.filter_by(company_id=company_id,
+                                             is_driver=True)
+            elif user_type == 'member':
+                users = User.query.filter_by(company_id=company_id,
+                                             is_member=True)
+            else:
+                return jsonify({'msg': 'Invalid user type.'}), HTTPStatus.BAD_REQUEST
+
+            return paginate(users, users_schema), HTTPStatus.OK
 
     def post(self, company_id: int):
         if not request.is_json:
