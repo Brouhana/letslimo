@@ -5,7 +5,6 @@ from flask import (
 )
 from flask.views import MethodView
 from http import HTTPStatus
-from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from app import db
 from app.models.company import Company
@@ -13,14 +12,15 @@ from app.models.user import User
 from app.models.user_invites import UserInvite
 from app.api.schemas.user import UserSchema
 from app.commons.pagination import paginate
+from app.middleware.role_required import role_required
+from app.commons.helpers import can_access_company
 
 
 class UserResource(MethodView):
-    @jwt_required()
+    @role_required('is_member')
     def get(self, company_id: int, user_id: int):
-        user = get_jwt_identity()
-        print(user)
-        company = Company.query.get_or_404(company_id)
+        if not can_access_company(company_id):
+            return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
 
         if user_id:
             user = User.query.filter_by(
@@ -42,7 +42,8 @@ class UserResource(MethodView):
             return paginate(users, users_schema), HTTPStatus.OK
 
     def post(self, company_id: int):
-        company = Company.query.get_or_404(company_id)
+        if not can_access_company(company_id):
+            return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
 
         # TODO: Validate that company.id matches requester's company id
 
