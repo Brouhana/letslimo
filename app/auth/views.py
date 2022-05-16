@@ -9,7 +9,7 @@ from flask_jwt_extended import (
 from flask_bcrypt import check_password_hash
 from http import HTTPStatus
 
-from app import db
+from app import db, bcrypt
 from app.models.user import User
 from app.models.user_invites import UserInvite
 
@@ -85,8 +85,11 @@ def invite():
     if invitee.invite_code is not invite_code:
         return jsonify({'msg': 'Invalid invite code.'}), HTTPStatus.UNAUTHORIZED
 
+    password = bcrypt.generate_password_hash(password, 16).decode('utf-8')
+
     # Create new user with data from UserInvite record
-    db.session.add(User(is_owner=invitee.is_owner,
+    db.session.add(User(company_id=invitee.company_id,
+                        is_owner=invitee.is_owner,
                         is_admin=invitee.is_admin,
                         is_member=invitee.is_member,
                         is_driver=invitee.is_driver,
@@ -99,7 +102,7 @@ def invite():
                         DL_state=invitee.DL_state,
                         DL_expr=invitee.DL_expr,
                         notes=invitee.notes,
-                        company_id=invitee.company_id))
+                        password=password))
 
     # Set the invitee's has_accepted field to True
     invitee.has_accepted = True
