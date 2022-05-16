@@ -14,7 +14,7 @@ from app.commons.helpers import can_access_company
 
 class CompanyResource(MethodView):
     @role_required('member')
-    def get(self, company_id: int):
+    def get(self, company_id):
         if not can_access_company(company_id):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
 
@@ -23,7 +23,7 @@ class CompanyResource(MethodView):
         return jsonify(res), HTTPStatus.OK
 
     @role_required('admin')
-    def put(self, company_id: int):
+    def put(self, company_id):
         if not can_access_company(company_id):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
 
@@ -32,7 +32,7 @@ class CompanyResource(MethodView):
         return company_schema.dump(company), HTTPStatus.OK
 
     @role_required('owner')
-    def delete(self, company_id: int):
+    def delete(self, company_id):
         if not can_access_company(company_id):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
 

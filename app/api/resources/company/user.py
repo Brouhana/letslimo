@@ -18,7 +18,7 @@ from flask_jwt_extended import get_jwt_identity
 
 class UserResource(MethodView):
     @role_required('member')
-    def get(self, company_id: int, user_id: int):
+    def get(self, company_id, user_id):
         if not can_access_company(company_id):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
 
@@ -41,7 +41,7 @@ class UserResource(MethodView):
 
             return paginate(users, users_schema), HTTPStatus.OK
 
-    def post(self, company_id: int):
+    def post(self, company_id):
         if not can_access_company(company_id):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
 
@@ -83,10 +83,10 @@ class UserResource(MethodView):
 
         return 'New user invite created', HTTPStatus.CREATED
 
-    def put(self, company_id: int, user_id: int):
+    def put(self, company_id, user_id):
         return "Update user"
 
-    def delete(self, company_id: int, user_id: int):
+    def delete(self, company_id, user_id):
         return "Delete user"
 
 
