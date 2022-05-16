@@ -12,7 +12,7 @@ from app.models.user_invites import UserInvite
 from app.api.schemas.user import UserSchema
 from app.commons.pagination import paginate
 from app.middleware.role_required import role_required
-from app.commons.helpers import can_access_company
+from app.commons.helpers import can_access_company, can_access
 
 
 class UserResource(MethodView):

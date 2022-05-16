@@ -31,7 +31,7 @@ class CompanyResource(MethodView):
         company.update(request.get_json())
         return company_schema.dump(company), HTTPStatus.OK
 
-    @role_required('admin')
+    @role_required('owner')
     def delete(self, company_id: int):
         if not can_access_company(company_id):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
