@@ -1,7 +1,7 @@
 from flask import Blueprint
 
-from app.api.resources.user import UserResource
-from app.api.resources.company import CompanyResource
+from app.api.resources.company.user import UserResource
+from app.api.resources.company.company import CompanyResource
 
 
 api_bp = Blueprint('api', __name__, url_prefix='/api/company/')
