@@ -5,7 +5,7 @@ from flask import (
 )
 from flask.views import MethodView
 from http import HTTPStatus
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from app import db
 from app.models.company import Company
@@ -16,7 +16,10 @@ from app.commons.pagination import paginate
 
 
 class UserResource(MethodView):
+    @jwt_required()
     def get(self, company_id: int, user_id: int):
+        user = get_jwt_identity()
+        print(user)
         company = Company.query.get_or_404(company_id)
 
         if user_id:

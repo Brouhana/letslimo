@@ -30,10 +30,15 @@ def login():
     if user is None or not check_password_hash(user.password, password):
         return jsonify({'msg': 'Incorrect email or password.'}), HTTPStatus.UNAUTHORIZED
 
-    access_token = create_access_token(
-        identity={'id': user.id, 'company': user.company_id})
-    refresh_token = create_refresh_token(
-        identity={'id': user.id, 'company': user.company_id})
+    identity = {'user_id': user.id,
+                'company_id': user.company_id,
+                'is_driver': user.is_driver,
+                'is_member': user.is_member,
+                'is_admin': user.is_admin,
+                'is_owner': user.is_owner}
+
+    access_token = create_access_token(identity=identity)
+    refresh_token = create_refresh_token(identity=identity)
 
     res = {'access_token': access_token, 'refresh_token': refresh_token}
     return jsonify(res), HTTPStatus.OK
