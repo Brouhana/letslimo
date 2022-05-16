@@ -22,9 +22,7 @@ class CompanyResource(MethodView):
         return company_schema.dump(company), HTTPStatus.OK
 
     def delete(self, company_id: int):
-        """ A soft delete approach, where a company that is deleted
-        is marked as inactive.
-        """
+        # A company that is deleted will be marked as inactive
         company = Company.query.get_or_404(company_id)
         company.update({'is_active': False})
         return 'Company disabled', HTTPStatus.OK
