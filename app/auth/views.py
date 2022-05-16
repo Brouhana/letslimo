@@ -17,49 +17,29 @@ from app.models.user_invites import UserInvite
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-# @auth_bp.post('/login')
-# def login():
-#     """
-#     Authenticates a user's credentials and returns tokens
-#     """
-#     if not request.is_json:
-#         return jsonify({'msg': 'Invalid request format.'}), 400
+@auth_bp.post('/login')
+def login():
+    email = request.json.get('email', None)
+    password = request.json.get('password', None)
 
-#     email = request.json.get('email', None)
-#     password = request.json.get('password', None)
+    if email is None or password is None:
+        return jsonify({'msg': 'Email or password is empty.'}), HTTPStatus.BAD_REQUEST
 
-#     if not email or not password:
-#         return jsonify({'msg': 'Email or password is empty.'}), 400
+    user = User.query.filter_by(email=email).first()
 
-#     user = User.query.filter_by(email=email).first()
+    if user is None or not check_password_hash(user.password, password):
+        return jsonify({'msg': 'Incorrect email or password.'}), HTTPStatus.UNAUTHORIZED
 
-#     if user is None or not check_password_hash(user.password, password):
-#         return jsonify({'msg': 'Incorrect email or password.'}), 401
+    access_token = create_access_token(
+        identity={'id': user.id, 'company': user.company_id})
+    refresh_token = create_refresh_token(
+        identity={'id': user.id, 'company': user.company_id})
 
-#     access_token = create_access_token(
-#         identity={'id': user.id, 'company': user.company_id})
-#     refresh_token = create_refresh_token(
-#         identity={'id': user.id, 'company': user.company_id})
-
-#     res = {"access_token": access_token, "refresh_token": refresh_token}
-
-#     return jsonify(res), 200
+    res = {'access_token': access_token, 'refresh_token': refresh_token}
+    return jsonify(res), HTTPStatus.OK
 
 
-# @auth_bp.post('/register')
-# def register():
-#     if not request.is_json:
-#         return jsonify({'msg': 'Invalid request format'}), 400
-
-#     email = request.json.get('email', None)
-#     first_name = request.json.get('first_name', None)
-#     last_name = request.json.get('last_name', None)
-#     phone = request.json.get('phone', None)
-#     password = request.json.get('password', None)
-#     company_id = request.json.get('company_id', None)
-
-
-@auth_bp.post('/register_invitee')
+@ auth_bp.post('/register_invitee')
 def register_invitee():
     email = request.json.get('email', None)
     invite_code = request.json.get('invite_code', None)
@@ -70,16 +50,15 @@ def register_invitee():
 
     invitee = UserInvite.query.filter_by(email=email).first()
 
-    # Check that the invitee exists
     if invitee is None:
         return jsonify({'msg': 'There is no invite for you yet.'}), HTTPStatus.NOT_FOUND
 
-    # Check that the invitee has not already accepted the invite
+    # Invitee must have not already accepted the invite
     if invitee.has_accepted:
         return jsonify({'msg': 'You have already accepted the invite.'}), HTTPStatus.BAD_REQUEST
 
-    # Check that request's invite code matches the invitee's invite code
-    if invitee.invite_code is not invite_code:
+    # Request's invite code must match the invitee's invite code
+    if invitee.invite_code != invite_code:
         return jsonify({'msg': 'Invalid invite code.'}), HTTPStatus.UNAUTHORIZED
 
     password = bcrypt.generate_password_hash(password, 14).decode('utf-8')
