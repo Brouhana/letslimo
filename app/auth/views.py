@@ -61,9 +61,6 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @auth_bp.post('/register_invitee')
 def invite():
-    if not request.is_json:
-        return jsonify({'msg': 'Invalid request format.'}), HTTPStatus.BAD_REQUEST
-
     email = request.json.get('email', None)
     invite_code = request.json.get('invite_code', None)
     password = request.json.get('password', None)

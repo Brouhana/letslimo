@@ -18,10 +18,6 @@ class CompanyResource(MethodView):
 
     def put(self, company_id: int):
         company = Company.query.get_or_404(company_id)
-
-        if not request.is_json:
-            return jsonify({'msg': 'Invalid request format.'}), HTTPStatus.BAD_REQUEST
-
         company.update(request.get_json())
         return company_schema.dump(company), HTTPStatus.OK
 

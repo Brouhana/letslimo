@@ -39,9 +39,6 @@ class UserResource(MethodView):
             return paginate(users, users_schema), HTTPStatus.OK
 
     def post(self, company_id: int):
-        if not request.is_json:
-            return jsonify({'msg': 'Invalid request format.'}), HTTPStatus.BadRequest
-
         company = Company.query.get_or_404(company_id)
 
         # TODO: Validate that company.id matches requester's company id
