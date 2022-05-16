@@ -1,7 +1,7 @@
-from functools import wraps
-from http import HTTPStatus
 from flask import jsonify
 from flask_jwt_extended import verify_jwt_in_request, get_jwt
+from functools import wraps
+from http import HTTPStatus
 
 
 def role_required(role):

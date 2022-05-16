@@ -4,6 +4,7 @@ from flask import (
     current_app as app
 )
 from flask.views import MethodView
+from flask_jwt_extended import get_jwt_identity
 from http import HTTPStatus
 
 from app import db
@@ -11,9 +12,8 @@ from app.models.user import User
 from app.models.user_invites import UserInvite
 from app.api.schemas.user import UserSchema
 from app.commons.pagination import paginate
-from app.middleware.role_required import role_required
 from app.commons.helpers import can_access_company
-from flask_jwt_extended import get_jwt_identity
+from app.middleware.role_required import role_required
 
 
 class UserResource(MethodView):
@@ -41,6 +41,7 @@ class UserResource(MethodView):
 
             return paginate(users, users_schema), HTTPStatus.OK
 
+    @role_required('member')
     def post(self, company_id):
         if not can_access_company(company_id):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
