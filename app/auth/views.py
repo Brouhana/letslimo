@@ -39,7 +39,7 @@ def login():
     return jsonify(res), HTTPStatus.OK
 
 
-@ auth_bp.post('/register_invitee')
+@auth_bp.post('/register_invitee')
 def register_invitee():
     email = request.json.get('email', None)
     invite_code = request.json.get('invite_code', None)
