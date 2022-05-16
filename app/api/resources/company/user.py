@@ -17,7 +17,7 @@ from app.commons.helpers import can_access_company
 
 
 class UserResource(MethodView):
-    @role_required('is_member')
+    @role_required('member')
     def get(self, company_id: int, user_id: int):
         if not can_access_company(company_id):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
