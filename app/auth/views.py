@@ -60,7 +60,7 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
 @auth_bp.post('/register_invitee')
-def invite():
+def register_invitee():
     email = request.json.get('email', None)
     invite_code = request.json.get('invite_code', None)
     password = request.json.get('password', None)
@@ -82,7 +82,7 @@ def invite():
     if invitee.invite_code is not invite_code:
         return jsonify({'msg': 'Invalid invite code.'}), HTTPStatus.UNAUTHORIZED
 
-    password = bcrypt.generate_password_hash(password, 16).decode('utf-8')
+    password = bcrypt.generate_password_hash(password, 14).decode('utf-8')
 
     # Create new user with data from UserInvite record
     db.session.add(User(company_id=invitee.company_id,
