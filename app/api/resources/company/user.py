@@ -12,7 +12,8 @@ from app.models.user_invites import UserInvite
 from app.api.schemas.user import UserSchema
 from app.commons.pagination import paginate
 from app.middleware.role_required import role_required
-from app.commons.helpers import can_access_company, can_access
+from app.commons.helpers import can_access_company
+from flask_jwt_extended import get_jwt_identity
 
 
 class UserResource(MethodView):
@@ -44,8 +45,6 @@ class UserResource(MethodView):
         if not can_access_company(company_id):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
 
-        # TODO: Validate that company.id matches requester's company id
-
         is_owner = request.json.get('is_owner', False)
         is_admin = request.json.get('is_admin', False)
         is_member = request.json.get('is_member', False)
@@ -59,8 +58,7 @@ class UserResource(MethodView):
         DL_state = request.json.get('DL_state', None)
         DL_expr = request.json.get('DL_expr', None)
         notes = request.json.get('notes', None)
-        # TODO: get requester's id
-        invited_by_user_id = request.json.get('invited_by_user_id', None)
+        invited_by_user_id = get_jwt_identity()['user_id']
 
         if email is None or first_name is None or last_name is None or phone is None:
             return jsonify({'msg': 'Missing required fields.'}), HTTPStatus.BadRequest
