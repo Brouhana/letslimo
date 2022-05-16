@@ -4,7 +4,7 @@ from flask import jsonify
 from flask_jwt_extended import verify_jwt_in_request, get_jwt
 
 
-def role_required(role):
+def role_required(role: str):
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args, **kwargs):
