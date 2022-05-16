@@ -80,7 +80,7 @@ def register_invitee():
                         notes=invitee.notes,
                         password=password))
 
-    # Set the invitee's has_accepted field to True
+    # As a User has been created, consider the invitee has accepted the invite
     invitee.has_accepted = True
 
     db.session.commit()
