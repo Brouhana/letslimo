@@ -42,4 +42,4 @@ class VehicleResource(MethodView):
         return jsonify('delete'), HTTPStatus.OK
 
 
-company_schema = CompanySchema()
+vehicle_schema = VehicleSchema()
