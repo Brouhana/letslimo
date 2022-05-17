@@ -9,10 +9,12 @@ from http import HTTPStatus
 
 from app import db
 from app.models.user import User
+from app.models.company import Company
 from app.models.user_invites import UserInvite
 from app.api.schemas.user import UserSchema
 from app.commons.pagination import paginate
 from app.commons.helpers import can_access_company
+from app.commons.mail import send_mail
 from app.middleware.role_required import role_required
 
 
@@ -42,7 +44,7 @@ class UserResource(MethodView):
             return paginate(users, users_schema), HTTPStatus.OK
 
     @role_required('member')
-    def post(self, company_id):
+    def post(self, company_id, user_id):
         if not can_access_company(company_id):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
 
@@ -59,6 +61,7 @@ class UserResource(MethodView):
         DL_state = request.json.get('DL_state', None)
         DL_expr = request.json.get('DL_expr', None)
         notes = request.json.get('notes', None)
+        company_id = get_jwt_identity()['company_id']
         invited_by_user_id = get_jwt_identity()['user_id']
 
         if email is None or first_name is None or last_name is None or phone is None:
@@ -77,10 +80,17 @@ class UserResource(MethodView):
                                   DL_state=DL_state,
                                   DL_expr=DL_expr,
                                   notes=notes,
+                                  company_id=company_id,
                                   invited_by_user_id=invited_by_user_id))
         db.session.commit()
 
-        # TODO: send email to invitee's email with invite_code
+        company = Company.query.filter_by(id=company_id).first()
+        invite = UserInvite.query.filter_by(email=email).first()
+        send_mail(email,
+                  'You are invited to join {} on Let\'sLimo'.format(
+                      company.company_name),
+                  'Hi {},<br/><br/>You have been added to drive for {} on Let\'sLimo.<br/><br/>To get started, create your account. \
+                      Your setup code is {}.<br/><br/>Have a great day!'.format(first_name, company.company_name, invite.invite_code))
 
         return 'New user invite created', HTTPStatus.CREATED
 
