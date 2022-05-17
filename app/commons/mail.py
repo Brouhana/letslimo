@@ -1,6 +1,7 @@
 import requests
 import os
 
+POSTMARK_EMAIL_API = "https://api.postmarkapp.com/email"
 POSTMARK_EMAIL_TEMPLATE_API = "https://api.postmarkapp.com/email/withTemplate"
 NO_REPLY_EMAIL = 'no-reply@letslimo.com'
 
