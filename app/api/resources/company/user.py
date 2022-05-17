@@ -67,6 +67,9 @@ class UserResource(MethodView):
         if email is None or first_name is None or last_name is None or phone is None:
             return jsonify({'msg': 'Missing required fields.'}), HTTPStatus.BadRequest
 
+        if UserInvite.query.filter_by(email=email).first():
+            return jsonify({'msg': 'Email is already in use.'}), HTTPStatus.BadRequest
+
         db.session.add(UserInvite(is_owner=is_owner,
                                   is_admin=is_admin,
                                   is_member=is_member,
