@@ -65,10 +65,10 @@ class UserResource(MethodView):
         invited_by_user_id = get_jwt_identity()['user_id']
 
         if email is None or first_name is None or last_name is None or phone is None:
-            return jsonify({'msg': 'Missing required fields.'}), HTTPStatus.BadRequest
+            return jsonify({'msg': 'Missing required fields.'}), HTTPStatus.BAD_REQUEST
 
         if UserInvite.query.filter_by(email=email).first():
-            return jsonify({'msg': 'Email is already in use.'}), HTTPStatus.BadRequest
+            return jsonify({'msg': 'An invite with that email has been sent already.'}), HTTPStatus.BAD_REQUEST
 
         db.session.add(UserInvite(is_owner=is_owner,
                                   is_admin=is_admin,
@@ -86,11 +86,11 @@ class UserResource(MethodView):
                                   company_id=company_id,
                                   invited_by_user_id=invited_by_user_id))
         db.session.commit()
-        company = Company.query.filter_by(id=company_id).first()
+
         invitee = UserInvite.query.filter_by(email=email).first()
+        company = invitee.company
 
         # Send email to invitee with invite code
-        # 'type' determines what Postmark template to send
         send_invite(to=invitee.email,
                     invitee_first_name=invitee.first_name,
                     invitee_last_name=invitee.last_name,
@@ -100,7 +100,7 @@ class UserResource(MethodView):
                     invite_code=invitee.invite_code,
                     type='member' if invitee.is_member else 'driver')
 
-        return 'New user invite created', HTTPStatus.CREATED
+        return jsonify({'msg': 'New user invite created'}), HTTPStatus.CREATED
 
     def put(self, company_id, user_id):
         return "Update user"
