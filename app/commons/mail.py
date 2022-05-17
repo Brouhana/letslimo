@@ -3,7 +3,7 @@ import os
 
 POSTMARK_EMAIL_API = "https://api.postmarkapp.com/email"
 POSTMARK_EMAIL_TEMPLATE_API = "https://api.postmarkapp.com/email/withTemplate"
-NO_REPLY_EMAIL = 'no-reply@letslimo.com'
+NO_REPLY_EMAIL = os.environ.get('NO-REPLY-EMAIL')
 
 
 def send_invite(to,
