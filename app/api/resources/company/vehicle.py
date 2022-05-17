@@ -13,29 +13,27 @@ from app.commons.helpers import can_access_company
 
 
 class VehicleResource(MethodView):
-    @role_required('member')
-    def get(self, company_id):
+    decorators = [role_required('member')]
+
+    def get(self, company_id, vehicle_id):
         if not can_access_company(company_id):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
 
         return jsonify('get'), HTTPStatus.OK
 
-    @role_required('admin')
-    def post(self, company_id):
+    def post(self, company_id, vehicle_id):
         if not can_access_company(company_id):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
 
         return jsonify('post'), HTTPStatus.OK
 
-    @role_required('admin')
-    def put(self, company_id):
+    def put(self, company_id, vehicle_id):
         if not can_access_company(company_id):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
 
         return jsonify('put'), HTTPStatus.OK
 
-    @role_required('owner')
-    def delete(self, company_id):
+    def delete(self, company_id, vehicle_id):
         if not can_access_company(company_id):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
 
