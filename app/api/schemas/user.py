@@ -7,6 +7,5 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
         exclude = ('password',)
-        include_fk = True
 
     company = ma.Nested(CompanySchema)
