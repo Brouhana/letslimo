@@ -17,11 +17,13 @@ api_bp.add_url_rule('/<int:company_id>/users/<user_id>',
                     methods=['GET', 'PUT', 'DELETE'],
                     view_func=user_view_func)
 
+
 company_view_func = CompanyResource.as_view('company')
 
 api_bp.add_url_rule('/<int:company_id>',
                     methods=['GET', 'PUT', 'DELETE'],
                     view_func=company_view_func)
+
 
 vehicle_view_func = VehicleResource.as_view('vehicle')
 
