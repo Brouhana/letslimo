@@ -14,7 +14,7 @@ from app.models.user_invites import UserInvite
 from app.api.schemas.user import UserSchema
 from app.commons.pagination import paginate
 from app.commons.helpers import can_access_company
-from app.commons.mail import send_mail
+from app.commons.mail import send_invite
 from app.middleware.role_required import role_required
 
 
@@ -83,14 +83,19 @@ class UserResource(MethodView):
                                   company_id=company_id,
                                   invited_by_user_id=invited_by_user_id))
         db.session.commit()
-
         company = Company.query.filter_by(id=company_id).first()
-        invite = UserInvite.query.filter_by(email=email).first()
-        send_mail(email,
-                  'You are invited to join {} on Let\'sLimo'.format(
-                      company.company_name),
-                  'Hi {},<br/><br/>You have been added to drive for {} on Let\'sLimo.<br/><br/>To get started, create your account. \
-                      Your setup code is {}.<br/><br/>Have a great day!'.format(first_name, company.company_name, invite.invite_code))
+        invitee = UserInvite.query.filter_by(email=email).first()
+
+        # Send email to invitee with invite code
+        # 'type' determines what Postmark template to send
+        send_invite(to=invitee.email,
+                    invitee_first_name=invitee.first_name,
+                    invitee_last_name=invitee.last_name,
+                    inviter_full_name=get_jwt_identity(
+                    )['first_name'] + ' ' + get_jwt_identity()['last_name'],
+                    company_name=company.company_name,
+                    invite_code=invitee.invite_code,
+                    type='member' if invitee.is_member else 'driver')
 
         return 'New user invite created', HTTPStatus.CREATED
 

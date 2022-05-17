@@ -31,6 +31,8 @@ def login():
         return jsonify({'msg': 'Incorrect email or password.'}), HTTPStatus.UNAUTHORIZED
 
     identity = {'user_id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
                 'company_id': user.company_id,
                 'is_driver': user.is_driver,
                 'is_member': user.is_member,
