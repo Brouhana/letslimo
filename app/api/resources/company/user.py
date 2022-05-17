@@ -9,7 +9,6 @@ from http import HTTPStatus
 
 from app import db
 from app.models.user import User
-from app.models.company import Company
 from app.models.user_invites import UserInvite
 from app.api.schemas.user import UserSchema
 from app.commons.pagination import paginate
