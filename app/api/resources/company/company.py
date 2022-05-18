@@ -16,30 +16,29 @@ class CompanyResource(MethodView):
     @role_required('member')
     def get(self, company_id):
         if not can_access_company(company_id):
-            return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
+            return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
         company = Company.query.get_or_404(company_id)
         res = company_schema.dump(company)
         return jsonify(res), HTTPStatus.OK
 
-    @role_required('admin')
+    @ role_required('admin')
     def put(self, company_id):
         if not can_access_company(company_id):
-            return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
+            return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
         company = Company.query.get_or_404(company_id)
         company.update(request.get_json())
         return company_schema.dump(company), HTTPStatus.OK
 
-    @role_required('owner')
+    @ role_required('owner')
     def delete(self, company_id):
         if not can_access_company(company_id):
-            return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
+            return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
-        # A company that is deleted will be marked as inactive
         company = Company.query.get_or_404(company_id)
         company.update({'is_active': False})
-        return 'Company disabled', HTTPStatus.OK
+        return {'msg': 'Company disabled'}, HTTPStatus.OK
 
 
 company_schema = CompanySchema()

@@ -12,7 +12,7 @@ class Vehicle(db.Model):
 
     # Basic vehicle information
     name = db.Column(db.String(120), nullable=False)
-    description = db.Column(db.Text(), nullable=False)
+    description = db.Column(db.Text(), nullable=True)
     pax_capacity = db.Column(db.Integer, nullable=False)
     license_plate_number = db.Column(db.String(12), nullable=False)
     exterior_color = db.Column(db.String(120), nullable=True)
