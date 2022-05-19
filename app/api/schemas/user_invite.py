@@ -1,21 +1,20 @@
 from app import ma, db
-from app.models.user import User
+from app.models.user_invites import UserInvite
 from marshmallow import fields, validate
 
 
-class UserSchema(ma.SQLAlchemyAutoSchema):
+class UserInviteSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
-        model = User
-        exclude = ('password',)
+        model = UserInvite
         sqla_session = db.session
         load_instance = True
 
     company_id = fields.Integer(required=True)
     email = fields.Email(required=True)
-    password = fields.String(required=True, load_only=True)
-    first_name = fields.Email(
+    invited_by_user_id = fields.Integer(required=True)
+    first_name = fields.String(
         required=True, validate=validate.Length(min=2, max=50))
-    last_name = fields.Email(
+    last_name = fields.String(
         required=True, validate=validate.Length(min=2, max=50))
     phone = fields.String(
         required=True, validate=validate.Length(max=20))

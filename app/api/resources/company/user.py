@@ -6,11 +6,13 @@ from flask import (
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity
 from http import HTTPStatus
+from marshmallow import ValidationError
 
 from app import db
 from app.models.user import User
 from app.models.user_invites import UserInvite
 from app.api.schemas.user import UserSchema
+from app.api.schemas.user_invite import UserInviteSchema
 from app.commons.pagination import paginate
 from app.commons.helpers import can_access_company
 from app.commons.mail import send_invite
@@ -21,7 +23,7 @@ class UserResource(MethodView):
     @role_required('member')
     def get(self, company_id, user_id):
         if not can_access_company(company_id):
-            return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
+            return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
         if user_id:
             user = User.query.filter_by(
@@ -38,7 +40,7 @@ class UserResource(MethodView):
                 users = User.query.filter_by(company_id=company_id,
                                              is_member=True)
             else:
-                return jsonify({'msg': 'Invalid user type.'}), HTTPStatus.BAD_REQUEST
+                return {'msg': 'Invalid user type.'}, HTTPStatus.BAD_REQUEST
 
             return paginate(users, users_schema), HTTPStatus.OK
 
@@ -47,47 +49,22 @@ class UserResource(MethodView):
         if not can_access_company(company_id):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
 
-        is_owner = request.json.get('is_owner', False)
-        is_admin = request.json.get('is_admin', False)
-        is_member = request.json.get('is_member', False)
-        is_driver = request.json.get('is_driver', True)
-        email = request.json.get('email', None)
-        first_name = request.json.get('first_name', None)
-        last_name = request.json.get('last_name', None)
-        phone = request.json.get('phone', None)
-        address = request.json.get('address', None)
-        DL_number = request.json.get('DL_number', None)
-        DL_state = request.json.get('DL_state', None)
-        DL_expr = request.json.get('DL_expr', None)
-        notes = request.json.get('notes', None)
-        company_id = get_jwt_identity()['company_id']
+        user_invite_schema = UserInviteSchema()
         invited_by_user_id = get_jwt_identity()['user_id']
+        company_id = get_jwt_identity()['company_id']
 
-        if email is None or first_name is None or last_name is None or phone is None:
-            return jsonify({'msg': 'Missing required fields.'}), HTTPStatus.BAD_REQUEST
+        try:
+            invitee = user_invite_schema.load({**request.get_json(),
+                                               'company_id': company_id,
+                                               'invited_by_user_id': invited_by_user_id})
+            # Validate email is unique
+            if UserInvite.query.filter_by(email=invitee.email).first() is not None:
+                return {'error': 'Email already exists.'}, HTTPStatus.UNPROCESSABLE_ENTITY
+        except ValidationError as err:
+            return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
 
-        if UserInvite.query.filter_by(email=email).first():
-            return jsonify({'msg': 'An invite with that email has been sent already.'}), HTTPStatus.BAD_REQUEST
-
-        db.session.add(UserInvite(is_owner=is_owner,
-                                  is_admin=is_admin,
-                                  is_member=is_member,
-                                  is_driver=is_driver,
-                                  email=email,
-                                  first_name=first_name,
-                                  last_name=last_name,
-                                  phone=phone,
-                                  address=address,
-                                  DL_number=DL_number,
-                                  DL_state=DL_state,
-                                  DL_expr=DL_expr,
-                                  notes=notes,
-                                  company_id=company_id,
-                                  invited_by_user_id=invited_by_user_id))
+        db.session.add(invitee)
         db.session.commit()
-
-        invitee = UserInvite.query.filter_by(email=email).first()
-        company = invitee.company
 
         # Send email to invitee with invite code
         send_invite(to=invitee.email,
@@ -95,11 +72,12 @@ class UserResource(MethodView):
                     invitee_last_name=invitee.last_name,
                     inviter_full_name=get_jwt_identity(
                     )['first_name'] + ' ' + get_jwt_identity()['last_name'],
-                    company_name=company.company_name,
+                    company_name=invitee.company.company_name,
                     invite_code=invitee.invite_code,
                     type='member' if invitee.is_member else 'driver')
 
-        return jsonify({'msg': 'New user invite created'}), HTTPStatus.CREATED
+        return {'msg': '{} has been invited.'.format(invitee.email),
+                'invitee': user_invite_schema.dump(invitee)}, HTTPStatus.OK
 
     def put(self, company_id, user_id):
         return "Update user"
@@ -108,5 +86,5 @@ class UserResource(MethodView):
         return "Delete user"
 
 
-user_schema = UserSchema()
+user_schema = UserSchema(partial=True)
 users_schema = UserSchema(many=True)

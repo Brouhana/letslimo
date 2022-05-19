@@ -7,6 +7,7 @@ from app.api.resources.company.vehicle import VehicleResource
 
 api_bp = Blueprint('api', __name__, url_prefix='/api/company/')
 
+
 user_view_func = UserResource.as_view('users')
 
 api_bp.add_url_rule('/<int:company_id>/users',
