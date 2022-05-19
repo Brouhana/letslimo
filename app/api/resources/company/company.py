@@ -5,7 +5,9 @@ from flask import (
 )
 from flask.views import MethodView
 from http import HTTPStatus
+from marshmallow import ValidationError
 
+from app import db
 from app.models.company import Company
 from app.api.schemas.company import CompanySchema
 from app.middleware.role_required import role_required
@@ -28,8 +30,16 @@ class CompanyResource(MethodView):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
         company = Company.query.get_or_404(company_id)
-        company.update(request.get_json())
-        return company_schema.dump(company), HTTPStatus.OK
+
+        try:
+            company = company_schema.load(request.json, instance=company)
+        except ValidationError as err:
+            return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
+
+        db.session.commit()
+
+        return {'msg': 'Company information updated',
+                'company': company_schema.dump(company)}, HTTPStatus.OK
 
     @ role_required('owner')
     def delete(self, company_id):
@@ -37,8 +47,8 @@ class CompanyResource(MethodView):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
         company = Company.query.get_or_404(company_id)
-        company.update({'is_active': False})
+        company.is_active = False
         return {'msg': 'Company disabled'}, HTTPStatus.OK
 
 
-company_schema = CompanySchema()
+company_schema = CompanySchema(partial=True)

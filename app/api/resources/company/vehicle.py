@@ -56,6 +56,7 @@ class VehicleResource(MethodView):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
         vehicle = Vehicle.query.get_or_404(vehicle_id)
+
         try:
             vehicle = vehicle_schema.load(request.json, instance=vehicle)
         except ValidationError as err:
