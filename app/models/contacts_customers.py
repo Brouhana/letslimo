@@ -8,7 +8,8 @@ class ContactsCustomer(db.Model):
 
     company_id = db.Column(db.Integer, db.ForeignKey(
         'companies.id'), nullable=False)
-    company = db.relationship('Company', backref='customers', lazy=True)
+    company = db.relationship(
+        'Company', backref='contacts_customers', lazy=True)
 
     first_name = db.Column(db.String(90), nullable=False)
     last_name = db.Column(db.String(90), nullable=False)
