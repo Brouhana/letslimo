@@ -19,3 +19,4 @@ class ContactsCompanySchema(ma.SQLAlchemyAutoSchema):
     website_url = fields.URL(is_required=False)
     description = fields.String(required=False)
     is_favorite = fields.Boolean(required=False)
+    is_active = fields.Boolean(required=False)

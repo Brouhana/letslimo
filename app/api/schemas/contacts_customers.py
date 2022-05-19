@@ -25,3 +25,4 @@ class ContactsCustomers(ma.SQLAlchemyAutoSchema):
         required=False, validate=validate.Length(max=255))
     notes = fields.String(required=False)
     is_favorite = fields.Boolean(required=False)
+    is_active = fields.Boolean(required=False)

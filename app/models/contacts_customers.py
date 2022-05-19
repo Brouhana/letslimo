@@ -25,6 +25,7 @@ class ContactsCustomer(db.Model):
     work_position = db.Column(db.String(255), nullable=True)
     notes = db.Column(db.Text(), nullable=True)
     is_favorite = db.Column(db.Boolean, nullable=True)
+    is_active = db.Column(db.Boolean, default=True, nullable=True)
 
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
