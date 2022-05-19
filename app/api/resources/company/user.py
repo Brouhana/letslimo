@@ -47,7 +47,7 @@ class UserResource(MethodView):
     @role_required('member')
     def post(self, company_id, user_id):
         if not can_access_company(company_id):
-            return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
+            return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
         user_invite_schema = UserInviteSchema()
         invited_by_user_id = get_jwt_identity()['user_id']
