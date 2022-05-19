@@ -20,8 +20,3 @@ class Company(db.Model):
 
     def __repr__(self):
         return '<Company %s>' % self.id
-
-    def update(self, data):
-        for key, value in data.items():
-            setattr(self, key, value)
-        db.session.commit()

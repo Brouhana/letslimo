@@ -13,9 +13,9 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
     company_id = fields.Integer(required=True)
     email = fields.Email(required=True)
     password = fields.String(required=True, load_only=True)
-    first_name = fields.Email(
+    first_name = fields.String(
         required=True, validate=validate.Length(min=2, max=50))
-    last_name = fields.Email(
+    last_name = fields.String(
         required=True, validate=validate.Length(min=2, max=50))
     phone = fields.String(
         required=True, validate=validate.Length(max=20))

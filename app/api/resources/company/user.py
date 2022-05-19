@@ -20,7 +20,8 @@ from app.middleware.role_required import role_required
 
 
 class UserResource(MethodView):
-    @role_required('member')
+    decorators = [role_required('member')]
+
     def get(self, company_id, user_id):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
@@ -44,7 +45,6 @@ class UserResource(MethodView):
 
             return paginate(users, users_schema), HTTPStatus.OK
 
-    @role_required('member')
     def post(self, company_id, user_id):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
@@ -57,8 +57,7 @@ class UserResource(MethodView):
             invitee = user_invite_schema.load({**request.get_json(),
                                                'company_id': company_id,
                                                'invited_by_user_id': invited_by_user_id})
-            # Validate email is unique
-            if UserInvite.query.filter_by(email=invitee.email).first() is not None:
+            if self.user_exists(invitee.email):
                 return {'error': 'Email already exists.'}, HTTPStatus.UNPROCESSABLE_ENTITY
         except ValidationError as err:
             return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
@@ -80,10 +79,30 @@ class UserResource(MethodView):
                 'invitee': user_invite_schema.dump(invitee)}, HTTPStatus.OK
 
     def put(self, company_id, user_id):
-        return "Update user"
+        if not can_access_company(company_id):
+            return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
+
+        user = User.query.get_or_404(user_id)
+
+        try:
+            user = user_schema.load(request.json, instance=user)
+        except ValidationError as err:
+            return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
+
+        db.session.commit()
+
+        return {'msg': '{}\'s information updated'.format(user.email),
+                'vehicle': user_schema.dump(user)}, HTTPStatus.OK
 
     def delete(self, company_id, user_id):
-        return "Delete user"
+        if not can_access_company(company_id):
+            return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
+
+        user = User.query.get_or_404(user_id)
+        user.is_active = False
+        db.session.commit()
+
+        return {'msg': 'Account deactivated'}, HTTPStatus.OK
 
 
 user_schema = UserSchema(partial=True)
