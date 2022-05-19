@@ -15,7 +15,7 @@ from app.commons.helpers import can_access_company
 from app.commons.pagination import paginate
 
 
-class ContactsCompanyResource(MethodView):
+class ContactsCustomerResource(MethodView):
     decorators = [role_required('member')]
 
     def get(self, company_id, customer_contact_id):
@@ -71,7 +71,8 @@ class ContactsCompanyResource(MethodView):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
-        company_contact = ContactsCompany.query.get_or_404(company_contact_id)
+        company_contact = ContactsCustomer.query.get_or_404(
+            customer_contact_id)
         company_contact.is_active = False
         return {'msg': 'Contact disabled'}, HTTPStatus.OK
 
