@@ -4,7 +4,7 @@ from app.models.contacts_customers import ContactsCustomer
 from marshmallow import fields, validate
 
 
-class ContactsCustomers(ma.SQLAlchemyAutoSchema):
+class ContactsCustomerSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = ContactsCustomer
         sqla_session = db.session
