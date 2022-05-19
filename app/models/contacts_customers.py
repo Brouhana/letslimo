@@ -18,7 +18,7 @@ class ContactsCustomer(db.Model):
     contacts_company_id = db.Column(db.Integer, db.ForeignKey(
         'contacts_companies.id'), nullable=True)
     contacts_company = db.relationship(
-        'Company', backref='contacts_customers', lazy=True)
+        'ContactsCompany', backref='contacts_customers', lazy=True)
 
     home_address = db.Column(db.String(255), nullable=True)
     work_address = db.Column(db.String(255), nullable=True)

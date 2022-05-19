@@ -26,7 +26,9 @@ def init_app(config_name):
         user,
         user_invites,
         company,
-        vehicle
+        vehicle,
+        contacts_companies,
+        contacts_customers
     )
 
     # Initialize extensions
