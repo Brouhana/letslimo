@@ -24,7 +24,7 @@ class CompanyResource(MethodView):
         res = company_schema.dump(company)
         return jsonify(res), HTTPStatus.OK
 
-    @ role_required('admin')
+    @role_required('admin')
     def put(self, company_id):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
@@ -41,7 +41,7 @@ class CompanyResource(MethodView):
         return {'msg': 'Company information updated',
                 'company': company_schema.dump(company)}, HTTPStatus.OK
 
-    @ role_required('owner')
+    @role_required('owner')
     def delete(self, company_id):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
