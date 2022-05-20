@@ -3,8 +3,8 @@ from flask import Blueprint
 from app.api.resources.company.user import UserResource
 from app.api.resources.company.company import CompanyResource
 from app.api.resources.company.vehicle import VehicleResource
-from app.api.resources.company.contacts_company import ContactsCompanyResource
-from app.api.resources.company.contacts_customers import ContactsCustomerResource
+from app.api.resources.company.contacts.contacts_company import ContactsCompanyResource
+from app.api.resources.company.contacts.contacts_customers import ContactsCustomerResource
 
 
 api_bp = Blueprint('api', __name__, url_prefix='/api/company/')
