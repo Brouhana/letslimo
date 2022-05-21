@@ -9,6 +9,7 @@ class TripSchema(ma.SQLAlchemyAutoSchema):
         sqla_session = db.session
         load_instance = True
 
+    company_id = fields.Integer(required=True)
     contacts_customer_id = fields.Integer(required=True)
     category = fields.String(required=True, validate=validate.Length(max=50))
     vehicle_id = fields.Integer(required=True)

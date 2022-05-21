@@ -10,6 +10,7 @@ class ContactsCustomerSchema(ma.SQLAlchemyAutoSchema):
         sqla_session = db.session
         load_instance = True
 
+    company_id = fields.Integer(required=True)
     first_name = fields.String(
         required=True, validate=validate.Length(min=1, max=90))
     last_name = fields.String(

@@ -9,6 +9,7 @@ class TripStopSchema(ma.SQLAlchemyAutoSchema):
         sqla_session = db.session
         load_instance = True
 
+    company_id = fields.Integer(required=True)
     trip_id = fields.Integer(required=True)
     address = fields.String(
         is_required=False, validate=validate.Length(max=255))
