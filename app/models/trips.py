@@ -21,6 +21,7 @@ class Trip(db.Model):
     pu_arrival_airport = db.Column(db.String(255), nullable=True)
     pu_flight_code = db.Column(db.String(6), nullable=True)
     pu_airline = db.Column(db.String(255), nullable=True)
+    do_datetime = db.Column(db.DateTime, nullable=True)
     do_address = db.Column(db.String(255), nullable=True)
     do_is_flight = db.Column(db.Boolean, nullable=True, default=False)
     do_departure_airport = db.Column(db.String(255), nullable=True)

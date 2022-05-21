@@ -14,7 +14,7 @@ class TripSchema(ma.SQLAlchemyAutoSchema):
     category = fields.String(required=True, validate=validate.Length(max=50))
     vehicle_id = fields.Integer(required=True)
     type = fields.String(required=True, validate=validate.Length(max=15))
-    pu_datetime = fields.Date(required=False)
+    pu_datetime = fields.DateTime(required=False)
     pu_address = fields.String(
         required=False, validate=validate.Length(max=255))
     pu_is_flight = fields.Boolean(required=False, default=False)
@@ -24,6 +24,7 @@ class TripSchema(ma.SQLAlchemyAutoSchema):
         required=False, validate=validate.Length(max=6))
     pu_airline = fields.String(
         required=False, validate=validate.Length(max=255))
+    do_datetime = fields.DateTime(required=False)
     do_address = fields.String(
         required=False, validate=validate.Length(max=255))
     do_is_flight = fields.Boolean(required=False, default=False)

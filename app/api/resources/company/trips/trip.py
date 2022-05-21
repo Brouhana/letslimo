@@ -28,20 +28,20 @@ class TripResource(MethodView):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
-        # try:
-        #     trip = trip_schema.load({**request.get_json(),
-        #                              'company_id': company_id})
+        try:
+            trip = trip_schema.load({**request.get_json(),
+                                     'company_id': company_id})
 
-        #     if trip.has_stops:
-        #         print('has_stops', trip.has_stops)
-        # except ValidationError as err:
-        #     return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
+            if trip.has_stops:
+                print('has_stops', trip.has_stops)
+        except ValidationError as err:
+            return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
 
-        # db.session.add(trip)
-        # db.session.commit()
+        db.session.add(trip)
+        db.session.commit()
 
-        # return {'msg': 'Trip scheduled',
-        #         'trip': trip_schema.dump(trip)}, HTTPStatus.OK
+        return {'msg': 'Trip scheduled',
+                'trip': trip_schema.dump(trip)}, HTTPStatus.OK
 
     def put(self, company_id, trip_id):
         if not can_access_company(company_id):
