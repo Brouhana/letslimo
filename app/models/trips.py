@@ -5,6 +5,10 @@ class Trip(db.Model):
     __tablename__ = 'trips'
 
     id = db.Column(db.Integer, primary_key=True)
+    company_id = db.Column(db.Integer, db.ForeignKey(
+        'companies.id'), nullable=False)
+    company = db.relationship(
+        'Company', backref='trips', lazy=True)
     contacts_customer_id = db.Column(db.Integer, db.ForeignKey(
         'contacts_customers.id'), nullable=False)
     contacts_customer = db.relationship(

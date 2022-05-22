@@ -5,6 +5,10 @@ class TripStop(db.Model):
     __tablename__ = 'trips_stops'
 
     id = db.Column(db.Integer, primary_key=True)
+    company_id = db.Column(db.Integer, db.ForeignKey(
+        'companies.id'), nullable=False)
+    company = db.relationship(
+        'Company', backref='trips_stops', lazy=True)
     trip_id = db.Column(db.Integer, db.ForeignKey('trips.id'))
     address = db.Column(db.String(255), nullable=True)
     is_flight = db.Column(db.Boolean, nullable=True, default=False)

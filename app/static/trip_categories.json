@@ -1,0 +1,134 @@
+[
+    {
+        "name": "Unclassified",
+        "sub": "Other"
+    },
+    {
+        "name": "Sports Event",
+        "sub": "Other"
+    },
+    {
+        "name": "Airport",
+        "sub": "Airport"
+    },
+    {
+        "name": "Airport Pick Up",
+        "sub": "Airport"
+    },
+    {
+        "name": "Airport Drop Off",
+        "sub": "Airport"
+    },
+    {
+        "name": "Corporate",
+        "sub": "Corporate"
+    },
+    {
+        "name": "Business Event",
+        "sub": "Corporate"
+    },
+    {
+        "name": "Business Trip",
+        "sub": "Corporate"
+    },
+    {
+        "name": "Birthday",
+        "sub": "Birthday"
+    },
+    {
+        "name": "Kids Birthday",
+        "sub": "Birthday"
+    },
+    {
+        "name": "Adult Birthday",
+        "sub": "Birthday"
+    },
+    {
+        "name": "Teen Birthday",
+        "sub": "Birthday"
+    },
+    {
+        "name": "Leisure",
+        "sub": "Leisure"
+    },
+    {
+        "name": "Bar",
+        "sub": "Leisure"
+    },
+    {
+        "name": "Night Outing",
+        "sub": "Leisure"
+    },
+    {
+        "name": "Concert/Entertainment",
+        "sub": "Leisure"
+    },
+    {
+        "name": "Tour",
+        "sub": "Leisure"
+    },
+    {
+        "name": "Private",
+        "sub": "Personal"
+    },
+    {
+        "name": "Celebration",
+        "sub": "Personal"
+    },
+    {
+        "name": "Holiday",
+        "sub": "Personal"
+    },
+    {
+        "name": "Medical",
+        "sub": "Personal"
+    },
+    {
+        "name": "Funeral",
+        "sub": "Personal"
+    },
+    {
+        "name": "Other",
+        "sub": "Personal"
+    },
+    {
+        "name": "Wedding",
+        "sub": "Wedding"
+    },
+    {
+        "name": "Bachelor Event",
+        "sub": "Wedding"
+    },
+    {
+        "name": "Bride/Groom",
+        "sub": "Wedding"
+    },
+    {
+        "name": "Party Event",
+        "sub": "Wedding"
+    },
+    {
+        "name": "Wedding Ceremony",
+        "sub": "Wedding"
+    },
+    {
+        "name": "School",
+        "sub": "School"
+    },
+    {
+        "name": "Prom/Formal/Homecoming",
+        "sub": "School"
+    },
+    {
+        "name": "Graduation",
+        "sub": "School"
+    },
+    {
+        "name": "School Trip",
+        "sub": "School"
+    },
+    {
+        "name": "School Trip",
+        "sub": "School"
+    }
+]

@@ -32,7 +32,7 @@ def paginate(query, schema):
     return {
         'total': page_obj.total,
         'pages': page_obj.pages,
-        'next': next_,
-        'prev': prev,
+        '_next': next_,
+        '_prev': prev,
         'results': schema.dump(page_obj.items),
     }

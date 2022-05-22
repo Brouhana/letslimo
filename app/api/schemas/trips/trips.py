@@ -10,6 +10,7 @@ class TripSchema(ma.SQLAlchemyAutoSchema):
         load_instance = True
 
     company_id = fields.Integer(required=True)
+    stops = fields.List(fields.Dict(), required=False)
     contacts_customer_id = fields.Integer(required=True)
     category = fields.String(required=True, validate=validate.Length(max=50))
     vehicle_id = fields.Integer(required=True)
