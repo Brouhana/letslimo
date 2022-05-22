@@ -53,6 +53,8 @@ class TripResource(MethodView):
             filter_kwargs['vehicle_id'] = vehicle
         if status:
             filter_kwargs['status'] = status
+        if driver:
+            filter_kwargs['driver_user_id'] = driver
 
         if pu_date and to_date:
             # Query trips between pu_date and to_date
@@ -113,7 +115,11 @@ class TripResource(MethodView):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
-        return ''
+        trip = Trip.query.get_or_404(trip_id)
+        trip.is_active = False
+        db.session.commit()
+
+        return {'msg': 'Trip hidden'}, HTTPStatus.OK
 
 
 trip_schema = TripSchema()

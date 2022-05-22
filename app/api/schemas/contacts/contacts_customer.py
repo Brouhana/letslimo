@@ -1,6 +1,7 @@
 from app import db
 from app import ma, db
 from app.models.contacts_customers import ContactsCustomer
+from app.api.schemas.contacts.contacts_company import ContactsCompanySchema
 from marshmallow import fields, validate
 
 
@@ -17,7 +18,8 @@ class ContactsCustomerSchema(ma.SQLAlchemyAutoSchema):
         required=True, validate=validate.Length(min=1, max=90))
     email = db.Column(db.String(120), unique=True, nullable=False)
     phone = db.Column(db.String(120), nullable=False)
-    contacts_company_id = fields.Integer(required=True)
+    contacts_company = fields.Nested(
+        ContactsCompanySchema, exclude=('company_id',), required=False)
     home_address = fields.String(
         required=False, validate=validate.Length(max=255))
     work_address = fields.String(
