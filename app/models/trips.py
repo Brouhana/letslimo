@@ -9,6 +9,10 @@ class Trip(db.Model):
         'companies.id'), nullable=False)
     company = db.relationship(
         'Company', backref='trips', lazy=True)
+    driver_user_id = db.Column(db.Integer, db.ForeignKey(
+        'users.id'), nullable=True)
+    driver_user = db.relationship(
+        'User', backref='trips', lazy=True)
     contacts_customer_id = db.Column(db.Integer, db.ForeignKey(
         'contacts_customers.id'), nullable=False)
     contacts_customer = db.relationship(
@@ -46,5 +50,6 @@ class Trip(db.Model):
     price_other4 = db.Column(db.Float, nullable=True)
     base_rate = db.Column(db.Float, nullable=True)
     has_stops = db.Column(db.Boolean, nullable=True, default=False)
+    is_active = db.Column(db.Boolean, nullable=True, default=True)
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     last_updated = db.Column(db.DateTime, onupdate=db.func.now())

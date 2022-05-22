@@ -1,5 +1,7 @@
 from app import ma, db
 from app.models.trips import Trip
+from app.api.schemas.user import UserSchema
+from app.api.schemas.contacts.contacts_customer import ContactsCustomerSchema
 from marshmallow import fields, validate
 
 
@@ -11,7 +13,15 @@ class TripSchema(ma.SQLAlchemyAutoSchema):
 
     company_id = fields.Integer(required=True)
     stops = fields.List(fields.Dict(), required=False)
-    contacts_customer_id = fields.Integer(required=True)
+    contacts_customer = fields.Nested(
+        ContactsCustomerSchema,
+        exclude=('notes', 'created_at', 'home_address',
+                 'updated_at', 'company_id'),
+        required=True)
+    driver_user = fields.Nested(UserSchema, exclude=(
+        'created_on', 'is_admin', 'is_owner', 'is_member',
+        'is_driver', 'last_updated', 'company_id', 'DL_expr', 'DL_number', 'DL_state'),
+    )
     category = fields.String(required=True, validate=validate.Length(max=50))
     vehicle_id = fields.Integer(required=True)
     type = fields.String(required=True, validate=validate.Length(max=15))
@@ -50,3 +60,4 @@ class TripSchema(ma.SQLAlchemyAutoSchema):
     price_other4 = fields.Float(required=False)
     base_rate = fields.Float(required=False)
     has_stops = fields.Boolean(required=False, default=False)
+    is_active = fields.Boolean(required=False, default=True)
