@@ -1,11 +1,11 @@
 from flask import Blueprint
 
-from app.api.resources.company.users.user import UserResource
-from app.api.resources.company.companies.company import CompanyResource
-from app.api.resources.company.vehicles.vehicle import VehicleResource
-from app.api.resources.company.contacts.contacts_company import ContactsCompanyResource
-from app.api.resources.company.contacts.contacts_customers import ContactsCustomerResource
-from app.api.resources.company.trips.trip import TripResource
+from app.api.resources.operator.users.user import UserResource
+from app.api.resources.operator.companies.company import CompanyResource
+from app.api.resources.operator.vehicles.vehicle import VehicleResource
+from app.api.resources.operator.contacts.contacts_company import ContactsCompanyResource
+from app.api.resources.operator.contacts.contacts_customers import ContactsCustomerResource
+from app.api.resources.operator.trips.trip import TripResource
 
 
 api_operator_bp = Blueprint(
