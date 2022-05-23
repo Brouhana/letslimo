@@ -45,6 +45,6 @@ def init_app(config_name):
         from app.api import views as api_views
 
         app.register_blueprint(auth_views.auth_bp)
-        app.register_blueprint(api_views.api_bp)
+        app.register_blueprint(api_views.api_operator_bp)
 
         return app

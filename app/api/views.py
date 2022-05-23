@@ -8,7 +8,8 @@ from app.api.resources.company.contacts.contacts_customers import ContactsCustom
 from app.api.resources.company.trips.trip import TripResource
 
 
-api_bp = Blueprint('api', __name__, url_prefix='/api/company/')
+api_operator_bp = Blueprint(
+    'api', __name__, url_prefix='/api/operator/company/')
 
 
 user_view_func = UserResource.as_view('users')
@@ -21,52 +22,52 @@ contacts_customer_view_func = ContactsCustomerResource.as_view(
 trip_view_func = TripResource.as_view('trip')
 
 
-api_bp.add_url_rule('/<int:company_id>',
-                    methods=['GET', 'PUT', 'DELETE'],
-                    view_func=company_view_func)
+api_operator_bp.add_url_rule('/<int:company_id>',
+                             methods=['GET', 'PUT', 'DELETE'],
+                             view_func=company_view_func)
 
 # /<int:company_id>/users/
-api_bp.add_url_rule('/<int:company_id>/users',
-                    methods=['GET', 'POST'],
-                    defaults={'user_id': None},
-                    view_func=user_view_func)
-api_bp.add_url_rule('/<int:company_id>/users/<user_id>',
-                    methods=['GET', 'PUT', 'DELETE'],
-                    view_func=user_view_func)
+api_operator_bp.add_url_rule('/<int:company_id>/users',
+                             methods=['GET', 'POST'],
+                             defaults={'user_id': None},
+                             view_func=user_view_func)
+api_operator_bp.add_url_rule('/<int:company_id>/users/<user_id>',
+                             methods=['GET', 'PUT', 'DELETE'],
+                             view_func=user_view_func)
 
 # /<int:company_id>/vehicles
-api_bp.add_url_rule('/<int:company_id>/vehicles',
-                    methods=['GET', 'POST'],
-                    defaults={'vehicle_id': None},
-                    view_func=vehicle_view_func)
-api_bp.add_url_rule('/<int:company_id>/vehicles/<vehicle_id>',
-                    methods=['GET', 'PUT', 'DELETE'],
-                    view_func=vehicle_view_func)
+api_operator_bp.add_url_rule('/<int:company_id>/vehicles',
+                             methods=['GET', 'POST'],
+                             defaults={'vehicle_id': None},
+                             view_func=vehicle_view_func)
+api_operator_bp.add_url_rule('/<int:company_id>/vehicles/<vehicle_id>',
+                             methods=['GET', 'PUT', 'DELETE'],
+                             view_func=vehicle_view_func)
 
 # /<int:company_id>/contacts/companies
-api_bp.add_url_rule('/<int:company_id>/contacts/companies',
-                    methods=['GET', 'POST'],
-                    defaults={'contacts_company_id': None},
-                    view_func=contacts_company_view_func)
-api_bp.add_url_rule('/<int:company_id>/contacts/companies/<int:contacts_company_id>',
-                    methods=['GET', 'PUT', 'DELETE'],
-                    view_func=contacts_company_view_func)
+api_operator_bp.add_url_rule('/<int:company_id>/contacts/companies',
+                             methods=['GET', 'POST'],
+                             defaults={'contacts_company_id': None},
+                             view_func=contacts_company_view_func)
+api_operator_bp.add_url_rule('/<int:company_id>/contacts/companies/<int:contacts_company_id>',
+                             methods=['GET', 'PUT', 'DELETE'],
+                             view_func=contacts_company_view_func)
 
 # /<int:company_id>/contacts/customers
-api_bp.add_url_rule('/<int:company_id>/contacts/customers',
-                    methods=['GET', 'POST'],
-                    defaults={'contacts_customer_id': None},
-                    view_func=contacts_customer_view_func)
-api_bp.add_url_rule('/<int:company_id>/contacts/customers/<int:contacts_customer_id>',
-                    methods=['GET', 'PUT', 'DELETE'],
-                    view_func=contacts_customer_view_func)
+api_operator_bp.add_url_rule('/<int:company_id>/contacts/customers',
+                             methods=['GET', 'POST'],
+                             defaults={'contacts_customer_id': None},
+                             view_func=contacts_customer_view_func)
+api_operator_bp.add_url_rule('/<int:company_id>/contacts/customers/<int:contacts_customer_id>',
+                             methods=['GET', 'PUT', 'DELETE'],
+                             view_func=contacts_customer_view_func)
 
 
 # /<int:company_id>/trips
-api_bp.add_url_rule('/<int:company_id>/trips',
-                    methods=['GET', 'POST'],
-                    defaults={'trip_id': None},
-                    view_func=trip_view_func)
-api_bp.add_url_rule('/<int:company_id>/trips/<int:trip_id>',
-                    methods=['GET', 'PUT', 'DELETE'],
-                    view_func=trip_view_func)
+api_operator_bp.add_url_rule('/<int:company_id>/trips',
+                             methods=['GET', 'POST'],
+                             defaults={'trip_id': None},
+                             view_func=trip_view_func)
+api_operator_bp.add_url_rule('/<int:company_id>/trips/<int:trip_id>',
+                             methods=['GET', 'PUT', 'DELETE'],
+                             view_func=trip_view_func)
