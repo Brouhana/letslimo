@@ -1,4 +1,5 @@
 from app import db
+from sqlalchemy.dialects.postgresql import JSON
 
 
 class Trip(db.Model):
@@ -50,6 +51,7 @@ class Trip(db.Model):
     price_other4 = db.Column(db.Float, nullable=True)
     base_rate = db.Column(db.Float, nullable=True)
     has_stops = db.Column(db.Boolean, nullable=True, default=False)
+    stops = db.Column(JSON, nullable=True)
     is_active = db.Column(db.Boolean, nullable=True, default=True)
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     last_updated = db.Column(db.DateTime, onupdate=db.func.now())

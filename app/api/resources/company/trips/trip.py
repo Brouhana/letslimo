@@ -11,9 +11,7 @@ from sqlalchemy import func
 
 from app import db
 from app.models.trips import Trip
-from app.models.trips_stops import TripStop
 from app.api.schemas.trips.trips import TripSchema
-from app.api.schemas.trips.trips_stops import TripStopSchema
 from app.middleware.role_required import role_required
 from app.commons.helpers import can_access_company
 from app.commons.pagination import paginate
@@ -30,16 +28,7 @@ class TripResource(MethodView):
             trip = Trip.query.filter_by(
                 company_id=company_id, id=trip_id).first()
 
-            if trip.has_stops:
-                stops = TripStop.query.filter_by(company_id=company_id,
-                                                 trip_id=trip_id)
-                res = {**trip_schema.dump(trip),
-                       'stops': trip_stops_schema.dump(stops)}
-
-            if not trip.has_stops:
-                res = trip_schema.dump(trip)
-
-            return jsonify(res), HTTPStatus.OK
+            return jsonify(trip_schema.dump(trip)), HTTPStatus.OK
 
         pu_date = request.args.get('pu_date')
         to_date = request.args.get('to_date')
@@ -81,24 +70,8 @@ class TripResource(MethodView):
             trip = trip_schema.load(
                 {**request.get_json(), 'company_id': company_id})
 
-            trip_stops = request.json.get('stops')
-
             db.session.add(trip)
-            trip.has_stops = True if trip_stops else False
             db.session.commit()
-
-            if trip_stops:
-                # Query trip just added for trip_id
-                # Then for all stops, serialize and add to trip_stops table
-                trip = Trip.query.filter_by(
-                    company_id=company_id).order_by(Trip.id.desc()).first()
-
-                for stop in trip_stops:
-                    trip_stop = trip_stop_schema.load(
-                        {**stop, 'trip_id': trip.id, 'company_id': company_id})
-
-                    db.session.add(trip_stop)
-                    db.session.commit()
 
         except ValidationError as err:
             return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
@@ -116,6 +89,7 @@ class TripResource(MethodView):
             trip = trip_schema.load(request.json, instance=trip)
 
             trip_stops = TripStop.query.filter_by(trip_id=trip_id).all()
+            print(trip_stops)
             for stop in trip_stops:
                 print(stop)
 
@@ -140,5 +114,3 @@ class TripResource(MethodView):
 
 trip_schema = TripSchema(partial=True)
 trips_schema = TripSchema(many=True)
-trip_stop_schema = TripStopSchema(partial=True)
-trip_stops_schema = TripStopSchema(many=True)
