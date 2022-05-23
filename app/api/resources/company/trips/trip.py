@@ -11,7 +11,7 @@ from sqlalchemy import func
 
 from app import db
 from app.models.trips import Trip
-from app.api.schemas.trips.trips import TripSchema
+from app.api.schemas.trips import TripSchema
 from app.middleware.role_required import role_required
 from app.commons.helpers import can_access_company
 from app.commons.pagination import paginate

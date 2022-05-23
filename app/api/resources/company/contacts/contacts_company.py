@@ -9,7 +9,7 @@ from marshmallow import ValidationError
 
 from app import db
 from app.models.contacts_companies import ContactsCompany
-from app.api.schemas.contacts.contacts_company import ContactsCompanySchema
+from app.api.schemas.contacts_company import ContactsCompanySchema
 from app.middleware.role_required import role_required
 from app.commons.helpers import can_access_company
 from app.commons.pagination import paginate
