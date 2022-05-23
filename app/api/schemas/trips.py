@@ -1,7 +1,7 @@
 from app import ma, db
 from app.models.trips import Trip
 from app.api.schemas.user import UserSchema
-from app.api.schemas.contacts.contacts_customer import ContactsCustomerSchema
+from app.api.schemas.contacts_customer import ContactsCustomerSchema
 from marshmallow import fields, validate
 
 

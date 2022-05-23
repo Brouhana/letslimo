@@ -5,7 +5,7 @@ from flask import (
 )
 from flask.views import MethodView
 from http import HTTPStatus
-from datetime import date, datetime
+from datetime import datetime
 from marshmallow import ValidationError
 from sqlalchemy import func
 

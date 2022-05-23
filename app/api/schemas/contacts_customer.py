@@ -1,6 +1,6 @@
 from app import ma, db
 from app.models.contacts_customers import ContactsCustomer
-from app.api.schemas.contacts.contacts_company import ContactsCompanySchema
+from app.api.schemas.contacts_company import ContactsCompanySchema
 from marshmallow import fields, validate
 
 
