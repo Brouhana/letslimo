@@ -50,7 +50,6 @@ class Trip(db.Model):
     price_other3 = db.Column(db.Float, nullable=True)
     price_other4 = db.Column(db.Float, nullable=True)
     base_rate = db.Column(db.Float, nullable=True)
-    has_stops = db.Column(db.Boolean, nullable=True, default=False)
     stops = db.Column(JSON, nullable=True)
     is_active = db.Column(db.Boolean, nullable=True, default=True)
     created_on = db.Column(db.DateTime, server_default=db.func.now())

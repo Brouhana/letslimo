@@ -60,5 +60,4 @@ class TripSchema(ma.SQLAlchemyAutoSchema):
     price_other3 = fields.Float(required=False)
     price_other4 = fields.Float(required=False)
     base_rate = fields.Float(required=False)
-    has_stops = fields.Boolean(required=False, default=False)
     is_active = fields.Boolean(required=False, default=True)

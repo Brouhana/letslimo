@@ -83,16 +83,9 @@ class TripResource(MethodView):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
         trip = Trip.query.get_or_404(trip_id)
-        trip_stops = request.json.get('stops')
 
         try:
             trip = trip_schema.load(request.json, instance=trip)
-
-            trip_stops = TripStop.query.filter_by(trip_id=trip_id).all()
-            print(trip_stops)
-            for stop in trip_stops:
-                print(stop)
-
         except ValidationError as err:
             return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
 
