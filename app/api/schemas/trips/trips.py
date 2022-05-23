@@ -10,6 +10,7 @@ class TripSchema(ma.SQLAlchemyAutoSchema):
         model = Trip
         sqla_session = db.session
         load_instance = True
+        include_fk = True
 
     company_id = fields.Integer(required=True)
     stops = fields.List(fields.Dict(), required=False)

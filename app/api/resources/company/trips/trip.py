@@ -109,7 +109,23 @@ class TripResource(MethodView):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
-        return ''
+        trip = Trip.query.get_or_404(trip_id)
+        trip_stops = request.json.get('stops')
+
+        try:
+            trip = trip_schema.load(request.json, instance=trip)
+
+            trip_stops = TripStop.query.filter_by(trip_id=trip_id).all()
+            for stop in trip_stops:
+                print(stop)
+
+        except ValidationError as err:
+            return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
+
+        db.session.commit()
+
+        return {'msg': 'Trip information updated',
+                'trip': trip_schema.dump(trip)}, HTTPStatus.OK
 
     def delete(self, company_id, trip_id):
         if not can_access_company(company_id):
@@ -122,7 +138,7 @@ class TripResource(MethodView):
         return {'msg': 'Trip hidden'}, HTTPStatus.OK
 
 
-trip_schema = TripSchema()
+trip_schema = TripSchema(partial=True)
 trips_schema = TripSchema(many=True)
-trip_stop_schema = TripStopSchema()
+trip_stop_schema = TripStopSchema(partial=True)
 trip_stops_schema = TripStopSchema(many=True)
