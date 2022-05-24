@@ -57,7 +57,7 @@ class UserResource(MethodView):
             invitee = user_invite_schema.load({**request.get_json(),
                                                'company_id': company_id,
                                                'invited_by_user_id': invited_by_user_id})
-            if self.user_exists(invitee.email):
+            if UserInvite.query.filter_by(email=invitee.email).first() is not None:
                 return {'error': 'Email already exists.'}, HTTPStatus.UNPROCESSABLE_ENTITY
         except ValidationError as err:
             return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY

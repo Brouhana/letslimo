@@ -19,7 +19,7 @@ def send_invite(to,
         'X-Postmark-Server-Token': os.environ.get('POSTMARK_SERVER_TOKEN')
     }
     payload = {
-        'From': NO_REPLY_EMAIL,
+        'From': '{} {}'.format(company_name, NO_REPLY_EMAIL),
         'To': to,
         'MessageStream': 'user-invites',
         "TemplateAlias": 'invite-driver-template' if type == 'driver' else 'invite-member-template',
