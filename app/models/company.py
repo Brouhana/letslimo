@@ -18,6 +18,8 @@ class Company(db.Model):
     # Stripe connected account
     stripe_account = db.Column(db.String(255), nullable=True)
 
+    enabled_auto_invoice = db.Column(db.Boolean, default=False)
+
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
