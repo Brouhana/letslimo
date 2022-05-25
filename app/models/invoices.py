@@ -16,6 +16,7 @@ class Invoice(db.Model):
         'contacts_customers.id'), nullable=False)
     contacts_customer = db.relationship(
         'ContactsCustomer', backref='invoices', lazy=True)
+    amount_due = db.Column(db.Float, nullable=False)
     message = db.Column(db.Text(), nullable=True)
     due_on = db.Column(db.DateTime, nullable=False)
     created_on = db.Column(db.DateTime, server_default=db.func.now())
