@@ -69,6 +69,7 @@ class InvoiceResource(MethodView):
                 {**request.get_json(), 'company_id': company_id})
 
             db.session.add(invoice)
+            # TODO: support for email sending
             db.session.commit()
 
         except ValidationError as err:
