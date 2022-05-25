@@ -5,7 +5,7 @@ from app.api.schemas.contacts_customer import ContactsCustomerSchema
 from marshmallow import fields
 
 
-class InviteSchema(ma.SQLAlchemyAutoSchema):
+class InvoiceSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Invoice
         sqla_session = db.session
