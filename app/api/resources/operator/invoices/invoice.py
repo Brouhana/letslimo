@@ -7,7 +7,7 @@ from flask.views import MethodView
 from http import HTTPStatus
 from marshmallow import ValidationError
 from datetime import datetime
-from sqlalchemy import func
+from sqlalchemy import func, or_
 
 from app import db
 from app.models.invoices import Invoice
@@ -42,8 +42,8 @@ class InvoiceResource(MethodView):
             filter_kwargs['status'] = param_status
 
         if param_contact:
-            ContactsCustomer.query.join(Invoice).filter(Invoice.first_name.ilike(
-                param_contact)).filter(Invoice.last_name.ilike(param_contact))
+            ContactsCustomer.query.join(Invoice).filter(or_(Invoice.first_name.contains(
+                param_contact), Invoice.last_name.contains(param_contact))).all()
 
         if param_invoiced_on:
             invoiced_on_date = datetime.strptime(
@@ -64,7 +64,17 @@ class InvoiceResource(MethodView):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
-        return '', HTTPStatus.OK
+        try:
+            invoice = invoice_schema.load(
+                {**request.get_json(), 'company_id': company_id})
+
+            db.session.add(invoice)
+            db.session.commit()
+
+        except ValidationError as err:
+            return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
+
+        return {'msg': 'Invoice created', 'invoice': invoice_schema.dump(invoice)}, HTTPStatus.OK
 
     def put(self, company_id, invoice_id):
         if not can_access_company(company_id):
