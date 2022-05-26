@@ -7,7 +7,7 @@ class Invoice(db.Model):
     __tablename__ = 'invoices'
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    uuid = db.Column(UUID(as_uuid=True), default=uuid4)
     company_id = db.Column(db.Integer, db.ForeignKey(
         'companies.id'), nullable=False)
     company = db.relationship(
@@ -21,5 +21,6 @@ class Invoice(db.Model):
     amount_due = db.Column(db.Float, nullable=False)
     message = db.Column(db.Text(), nullable=True)
     due_on = db.Column(db.DateTime, nullable=False)
+    is_paid = db.Column(db.Boolean, default=False)
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     last_updated = db.Column(db.DateTime, onupdate=db.func.now())

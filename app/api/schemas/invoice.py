@@ -15,13 +15,13 @@ class InvoiceSchema(ma.SQLAlchemyAutoSchema):
     company_id = fields.Integer(required=True)
     contacts_customer = fields.Nested(
         ContactsCustomerSchema,
-        exclude=('created_at',
-                 'updated_at', 'company_id'),
+        exclude=('created_on',
+                 'last_updated', 'company_id'),
         required=True)
     trip = fields.Nested(
         TripSchema,
-        exclude=('created_at',
-                 'updated_at', 'company_id'),
+        exclude=('created_on',
+                 'last_updated', 'company_id'),
         required=True)
     amount_due = fields.Float(required=True)
     message = fields.String(required=False)

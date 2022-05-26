@@ -13,6 +13,7 @@ class ContactsCustomer(db.Model):
 
     first_name = db.Column(db.String(90), nullable=False)
     last_name = db.Column(db.String(90), nullable=False)
+    full_name = db.Column(db.String(180), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     phone = db.Column(db.String(120), nullable=False)
 
@@ -28,5 +29,5 @@ class ContactsCustomer(db.Model):
     is_favorite = db.Column(db.Boolean, nullable=True)
     is_active = db.Column(db.Boolean, default=True, nullable=True)
 
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+    created_on = db.Column(db.DateTime, server_default=db.func.now())
+    last_updated = db.Column(db.DateTime, onupdate=db.func.now())

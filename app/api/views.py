@@ -6,6 +6,7 @@ from app.api.resources.operator.vehicles.vehicle import VehicleResource
 from app.api.resources.operator.contacts.contacts_company import ContactsCompanyResource
 from app.api.resources.operator.contacts.contacts_customers import ContactsCustomerResource
 from app.api.resources.operator.trips.trip import TripResource
+from app.api.resources.operator.invoices.invoice import InvoiceResource
 
 
 api_operator_bp = Blueprint(
@@ -20,6 +21,7 @@ contacts_company_view_func = ContactsCompanyResource.as_view(
 contacts_customer_view_func = ContactsCustomerResource.as_view(
     'contacts_customer')
 trip_view_func = TripResource.as_view('trip')
+invoice_view_func = InvoiceResource.as_view('invoice')
 
 
 api_operator_bp.add_url_rule('/<int:company_id>',
@@ -71,3 +73,13 @@ api_operator_bp.add_url_rule('/<int:company_id>/trips',
 api_operator_bp.add_url_rule('/<int:company_id>/trips/<int:trip_id>',
                              methods=['GET', 'PUT', 'DELETE'],
                              view_func=trip_view_func)
+
+
+# /<int:company_id>/invoices
+api_operator_bp.add_url_rule('/<int:company_id>/invoices',
+                             methods=['GET', 'POST'],
+                             defaults={'invoice_id': None},
+                             view_func=invoice_view_func)
+api_operator_bp.add_url_rule('/<int:company_id>/invoices/<int:invoice_id>',
+                             methods=['GET', 'PUT', 'DELETE'],
+                             view_func=invoice_view_func)

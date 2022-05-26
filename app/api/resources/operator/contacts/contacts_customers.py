@@ -40,6 +40,8 @@ class ContactsCustomerResource(MethodView):
         try:
             customer_contact = customer_contact_schema.load({**request.get_json(),
                                                              'company_id': company_id})
+            customer_contact.full_name = customer_contact.first_name + \
+                ' ' + customer_contact.last_name
         except ValidationError as err:
             return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
 

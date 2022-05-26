@@ -16,8 +16,8 @@ class TripSchema(ma.SQLAlchemyAutoSchema):
     stops = fields.List(fields.Dict(), required=False)
     contacts_customer = fields.Nested(
         ContactsCustomerSchema,
-        exclude=('notes', 'created_at', 'home_address',
-                 'updated_at', 'company_id'),
+        exclude=('notes', 'created_on', 'home_address',
+                 'last_updated', 'company_id'),
         required=True)
     driver_user = fields.Nested(UserSchema, exclude=(
         'created_on', 'is_admin', 'is_owner', 'is_member',

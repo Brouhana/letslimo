@@ -20,8 +20,8 @@ class Company(db.Model):
 
     enabled_auto_invoice = db.Column(db.Boolean, default=False)
 
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+    created_on = db.Column(db.DateTime, server_default=db.func.now())
+    last_updated = db.Column(db.DateTime, onupdate=db.func.now())
 
     def __repr__(self):
         return '<Company %s>' % self.id
