@@ -2,9 +2,10 @@ from flask import request, jsonify, Blueprint, current_app as app
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
-    jwt_required,
     get_jwt_identity,
-    get_jwt,
+    jwt_required,
+    set_access_cookies,
+    set_refresh_cookies,
 )
 from flask_bcrypt import check_password_hash
 from http import HTTPStatus
@@ -42,8 +43,14 @@ def login():
     access_token = create_access_token(identity=identity)
     refresh_token = create_refresh_token(identity=identity)
 
-    res = {'access_token': access_token, 'refresh_token': refresh_token}
-    return jsonify(res), HTTPStatus.OK
+    res = jsonify({'msg': 'Successful login.',
+                   'access_token': access_token,
+                   'refresh_token': refresh_token})
+
+    set_access_cookies(res, access_token)
+    set_refresh_cookies(res, refresh_token)
+
+    return res, HTTPStatus.OK
 
 
 @auth_bp.post('/register_invitee')
@@ -93,3 +100,21 @@ def register_invitee():
     db.session.commit()
 
     return jsonify({'msg': 'Successfully registered.'}), HTTPStatus.OK
+
+
+@auth_bp.get('/refresh')
+@jwt_required(refresh=True)
+def refresh_token():
+    identity = get_jwt_identity()
+    access_token = create_access_token(identity=identity)
+
+    res = jsonify(refresh=True, access_token=access_token)
+    set_access_cookies(res, access_token)
+
+    return res, HTTPStatus.OK
+
+
+@auth_bp.get('/identity')
+@jwt_required()
+def identity():
+    return jsonify(identity=get_jwt_identity()), HTTPStatus.OK
