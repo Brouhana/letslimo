@@ -14,7 +14,7 @@ class ContactsCustomer(db.Model):
     first_name = db.Column(db.String(90), nullable=False)
     last_name = db.Column(db.String(90), nullable=False)
     full_name = db.Column(db.String(180), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=False, nullable=False)
     phone = db.Column(db.String(120), nullable=False)
 
     contacts_company_id = db.Column(db.Integer, db.ForeignKey(
