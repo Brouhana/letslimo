@@ -17,8 +17,9 @@ class ContactsCustomerSchema(ma.SQLAlchemyAutoSchema):
         required=True, validate=validate.Length(min=1, max=90))
     full_name = fields.String(
         required=False, validate=validate.Length(min=1, max=180))
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    phone = db.Column(db.String(120), nullable=False)
+    email = fields.String(required=False)
+    phone = fields.String(required=False)
+    contacts_company_id = fields.Integer(required=False)
     contacts_company = fields.Nested(
         ContactsCompanySchema, exclude=('company_id',), required=False)
     home_address = fields.String(

@@ -18,14 +18,14 @@ from app.commons.pagination import paginate
 class ContactsCustomerResource(MethodView):
     decorators = [role_required('member')]
 
-    def get(self, company_id, customer_contact_id):
+    def get(self, company_id, contacts_customer_id):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
-        if customer_contact_id:
-            customer_contact_id = ContactsCustomer.query.filter_by(
-                company_id=company_id, id=customer_contact_id).first()
-            res = customer_contact_schema.dump(customer_contact_id)
+        if contacts_customer_id:
+            contacts_customer_id = ContactsCustomer.query.filter_by(
+                company_id=company_id, id=contacts_customer_id).first()
+            res = customer_contact_schema.dump(contacts_customer_id)
             return jsonify(res), HTTPStatus.OK
         else:
             customer_contacts = ContactsCustomer.query.filter_by(
@@ -33,7 +33,7 @@ class ContactsCustomerResource(MethodView):
 
             return paginate(customer_contacts, customer_contacts_schema), HTTPStatus.OK
 
-    def post(self, company_id, customer_contact_id):
+    def post(self, company_id, contacts_customer_id):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
@@ -51,12 +51,12 @@ class ContactsCustomerResource(MethodView):
         return {'msg': 'Contact added',
                 'company_contact': customer_contact_schema.dump(customer_contact)}, HTTPStatus.OK
 
-    def put(self, company_id, customer_contact_id):
+    def put(self, company_id, contacts_customer_id):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
         customer_contact = ContactsCustomer.query.get_or_404(
-            customer_contact_id)
+            contacts_customer_id)
 
         try:
             customer_contact = customer_contact_schema.load(
@@ -69,12 +69,12 @@ class ContactsCustomerResource(MethodView):
         return {'msg': 'Contact updated',
                 'company_contact': customer_contact_schema.dump(customer_contact)}, HTTPStatus.OK
 
-    def delete(self, company_id, customer_contact_id):
+    def delete(self, company_id, contacts_customer_id):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
         company_contact = ContactsCustomer.query.get_or_404(
-            customer_contact_id)
+            contacts_customer_id)
         company_contact.is_active = False
         return {'msg': 'Contact disabled'}, HTTPStatus.OK
 

@@ -54,3 +54,6 @@ class Trip(db.Model):
     is_active = db.Column(db.Boolean, nullable=True, default=True)
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     last_updated = db.Column(db.DateTime, onupdate=db.func.now())
+
+    def __repr__(self):
+        return '<Trip %s>' % self.id

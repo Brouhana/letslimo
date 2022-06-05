@@ -24,3 +24,6 @@ class Invoice(db.Model):
     is_paid = db.Column(db.Boolean, default=False)
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     last_updated = db.Column(db.DateTime, onupdate=db.func.now())
+
+    def __repr__(self):
+        return '<Invoice %s>' % self.id

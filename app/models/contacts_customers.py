@@ -31,3 +31,6 @@ class ContactsCustomer(db.Model):
 
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     last_updated = db.Column(db.DateTime, onupdate=db.func.now())
+
+    def __repr__(self):
+        return '<ContactsCustomer %s>' % self.id
