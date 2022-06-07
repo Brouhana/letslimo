@@ -1,10 +1,13 @@
 from app import db
+from sqlalchemy.dialects.postgresql import UUID
+from uuid import uuid4
 
 
 class ContactsCustomer(db.Model):
     __tablename__ = 'contacts_customers'
 
     id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(UUID(as_uuid=True), default=uuid4, unique=True)
 
     company_id = db.Column(db.Integer, db.ForeignKey(
         'companies.id'), nullable=False)

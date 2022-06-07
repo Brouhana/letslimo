@@ -29,7 +29,7 @@ class ContactsCustomerResource(MethodView):
             return jsonify(res), HTTPStatus.OK
         else:
             customer_contacts = ContactsCustomer.query.filter_by(
-                company_id=company_id)
+                company_id=company_id).order_by(ContactsCustomer.full_name)
 
             return paginate(customer_contacts, customer_contacts_schema), HTTPStatus.OK
 

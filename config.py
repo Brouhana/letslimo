@@ -12,13 +12,12 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     CORS_HEADERS = 'Content-Type'
-    CORS_ORIGINS = ["http://localhost:3000"]
 
     JWT_SECRET_KEY = environ.get('JWT_SECRET_KEY')
     JWT_ACCESS_TOKEN_EXPIRES = 86400
     JWT_COOKIE_SAMESITE = "Strict"
     JWT_TOKEN_LOCATION = ['cookies']
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=5)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=3200)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=14)
     JWT_COOKIE_SECURE = True
     JWT_CSRF_IN_COOKIES = True
@@ -36,6 +35,7 @@ class DevConfig(Config):
     FLASK_ENV = 'development'
     DEBUG = True
     TESTING = True
+    CORS_ORIGINS = ["http://localhost:3000"]
     SQLALCHEMY_DATABASE_URI = environ.get('DEV_DATABASE_URI')
 
 

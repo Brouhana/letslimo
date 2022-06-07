@@ -7,7 +7,7 @@ class Invoice(db.Model):
     __tablename__ = 'invoices'
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(UUID(as_uuid=True), default=uuid4)
+    uuid = db.Column(UUID(as_uuid=True), default=uuid4, unique=True)
     company_id = db.Column(db.Integer, db.ForeignKey(
         'companies.id'), nullable=False)
     company = db.relationship(

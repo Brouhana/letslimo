@@ -1,10 +1,14 @@
 from app import db
+from sqlalchemy.dialects.postgresql import UUID
+from uuid import uuid4
 
 
 class Company(db.Model):
     __tablename__ = 'companies'
 
     id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(UUID(as_uuid=True), default=uuid4, unique=True)
+
     is_active = db.Column(db.Boolean, default=True)
 
     # Basic company information

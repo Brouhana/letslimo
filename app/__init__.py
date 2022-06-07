@@ -14,6 +14,7 @@ migrate = Migrate()
 jwt = JWTManager()
 bcrypt = Bcrypt()
 ma = Marshmallow()
+cors = CORS()
 
 
 def init_app(config_name):
@@ -40,7 +41,7 @@ def init_app(config_name):
     jwt.init_app(app)
     bcrypt.init_app(app)
     ma.init_app(app)
-    CORS(app)
+    # cors.init_app(app, resources={r"*": {"origins": "http://localhost:3000"}})
 
     with app.app_context():
         # Import and register blueprints
