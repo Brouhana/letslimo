@@ -6,6 +6,7 @@ from flask import (
 from flask.views import MethodView
 from http import HTTPStatus
 from marshmallow import ValidationError
+from sqlalchemy import func
 
 from app import db
 from app.models.contacts_customers import ContactsCustomer
@@ -24,14 +25,22 @@ class ContactsCustomerResource(MethodView):
 
         if contacts_customer_id:
             contacts_customer_id = ContactsCustomer.query.filter_by(
-                company_id=company_id, id=contacts_customer_id).first()
+                company_id=company_id, uuid=contacts_customer_id).first()
             res = customer_contact_schema.dump(contacts_customer_id)
             return jsonify(res), HTTPStatus.OK
+
+        param_name = request.args.get('name')
+
+        if param_name:
+            query_customer_name_filter = func.lower(ContactsCustomer.full_name).contains(
+                func.lower(param_name))
+            customer_contacts = ContactsCustomer.query.filter(
+                query_customer_name_filter).order_by(ContactsCustomer.full_name)
         else:
             customer_contacts = ContactsCustomer.query.filter_by(
                 company_id=company_id).order_by(ContactsCustomer.full_name)
 
-            return paginate(customer_contacts, customer_contacts_schema), HTTPStatus.OK
+        return paginate(customer_contacts, customer_contacts_schema), HTTPStatus.OK
 
     def post(self, company_id, contacts_customer_id):
         if not can_access_company(company_id):
@@ -56,7 +65,7 @@ class ContactsCustomerResource(MethodView):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
         customer_contact = ContactsCustomer.query.get_or_404(
-            contacts_customer_id)
+            uuid=contacts_customer_id)
 
         try:
             customer_contact = customer_contact_schema.load(
@@ -74,7 +83,7 @@ class ContactsCustomerResource(MethodView):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
         company_contact = ContactsCustomer.query.get_or_404(
-            contacts_customer_id)
+            uuid=contacts_customer_id)
         company_contact.is_active = False
         return {'msg': 'Contact disabled'}, HTTPStatus.OK
 
