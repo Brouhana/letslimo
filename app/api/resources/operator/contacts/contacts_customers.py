@@ -49,6 +49,8 @@ class ContactsCustomerResource(MethodView):
         try:
             customer_contact = customer_contact_schema.load({**request.get_json(),
                                                              'company_id': company_id})
+            customer_contact.first_name = customer_contact.first_name.capitalize()
+            customer_contact.last_name = customer_contact.last_name.capitalize()
             customer_contact.full_name = customer_contact.first_name + \
                 ' ' + customer_contact.last_name
         except ValidationError as err:
@@ -64,8 +66,8 @@ class ContactsCustomerResource(MethodView):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
-        customer_contact = ContactsCustomer.query.get_or_404(
-            uuid=contacts_customer_id)
+        customer_contact = ContactsCustomer.query.filter_by(
+            company_id=company_id, uuid=contacts_customer_id).first()
 
         try:
             customer_contact = customer_contact_schema.load(

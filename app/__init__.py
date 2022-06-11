@@ -41,7 +41,8 @@ def init_app(config_name):
     jwt.init_app(app)
     bcrypt.init_app(app)
     ma.init_app(app)
-    # cors.init_app(app, resources={r"*": {"origins": "http://localhost:3000"}})
+    cors.init_app(app, origins=["http://localhost:3000"], headers=['Content-Type'],
+                  expose_headers=['Access-Control-Allow-Origin'], supports_credentials=True)
 
     with app.app_context():
         # Import and register blueprints
