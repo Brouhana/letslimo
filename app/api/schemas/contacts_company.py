@@ -12,12 +12,12 @@ class ContactsCompanySchema(ma.SQLAlchemyAutoSchema):
     company_id = fields.Integer(required=True)
     name = fields.String(
         required=True, validate=validate.Length(min=1, max=255))
-    email = fields.Email(required=False)
+    email = fields.String(required=False)
     phone = fields.String(
         required=False, validate=validate.Length(max=20))
     address = fields.String(
-        is_required=False, validate=validate.Length(max=255))
-    website_url = fields.URL(is_required=False)
+        required=False, validate=validate.Length(max=255))
+    website_url = fields.String(is_required=False)
     description = fields.String(required=False)
     is_favorite = fields.Boolean(required=False)
     is_active = fields.Boolean(required=False)

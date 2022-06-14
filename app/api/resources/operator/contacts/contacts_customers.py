@@ -49,8 +49,9 @@ class ContactsCustomerResource(MethodView):
         try:
             customer_contact = customer_contact_schema.load({**request.get_json(),
                                                              'company_id': company_id})
-            customer_contact.first_name = customer_contact.first_name.capitalize()
-            customer_contact.last_name = customer_contact.last_name.capitalize()
+
+            customer_contact.first_name = customer_contact.first_name.capitalize().strip()
+            customer_contact.last_name = customer_contact.last_name.capitalize().strip()
             customer_contact.full_name = customer_contact.first_name + \
                 ' ' + customer_contact.last_name
         except ValidationError as err:
@@ -68,6 +69,12 @@ class ContactsCustomerResource(MethodView):
 
         customer_contact = ContactsCustomer.query.filter_by(
             company_id=company_id, uuid=contacts_customer_id).first()
+
+        if customer_contact.first_name:
+            customer_contact.first_name = customer_contact.first_name.capitalize().strip()
+
+        if customer_contact.last_name:
+            customer_contact.last_name = customer_contact.last_name.capitalize().strip()
 
         try:
             customer_contact = customer_contact_schema.load(

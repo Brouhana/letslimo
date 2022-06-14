@@ -51,7 +51,7 @@ api_operator_bp.add_url_rule('/<int:company_id>/contacts/companies',
                              methods=['GET', 'POST'],
                              defaults={'contacts_company_id': None},
                              view_func=contacts_company_view_func)
-api_operator_bp.add_url_rule('/<int:company_id>/contacts/companies/<int:contacts_company_id>',
+api_operator_bp.add_url_rule('/<int:company_id>/contacts/companies/<string:contacts_company_id>',
                              methods=['GET', 'PUT', 'DELETE'],
                              view_func=contacts_company_view_func)
 
