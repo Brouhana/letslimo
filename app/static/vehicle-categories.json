@@ -1,0 +1,66 @@
+[
+    {
+        "name": "SUV",
+        "type": "SUV"
+    },
+    {
+        "name": "Sedan",
+        "type": "Sedan"
+    },
+    {
+        "name": "Bus",
+        "type": "Bus"
+    },
+    {
+        "name": "Party Bus",
+        "type": "Bus"
+    },
+    {
+        "name": "Shuttle Bus",
+        "type": "Bus"
+    },
+    {
+        "name": "Van",
+        "type": "Bus"
+    },
+    {
+        "name": "Party Van",
+        "type": "Bus"
+    },
+    {
+        "name": "Shuttle Van",
+        "type": "Bus"
+    },
+    {
+        "name": "Sprinter Van",
+        "type": "Bus"
+    },
+    {
+        "name": "Mini Coach (ADA)",
+        "type": "Bus"
+    },
+    {
+        "name": "Motor Coach (ADA)",
+        "type": "Bus"
+    },
+    {
+        "name": "Mini Coach",
+        "type": "Bus"
+    },
+    {
+        "name": "Motor Coach",
+        "type": "Bus"
+    },
+    {
+        "name": "Stretcher Limousine",
+        "type": "Sedan"
+    },
+    {
+        "name": "Antique/Classic",
+        "type": "Sedan"
+    },
+    {
+        "name": "Other",
+        "type": "Sedan"
+    }
+]

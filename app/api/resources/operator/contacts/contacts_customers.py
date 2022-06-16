@@ -76,6 +76,11 @@ class ContactsCustomerResource(MethodView):
         if customer_contact.last_name:
             customer_contact.last_name = customer_contact.last_name.capitalize().strip()
 
+        # Update full name if first or last changed
+        if customer_contact.first_name or customer_contact.last_name:
+            customer_contact.full_name = customer_contact.first_name + \
+                ' ' + customer_contact.last_name
+
         try:
             customer_contact = customer_contact_schema.load(
                 request.json, instance=customer_contact)
