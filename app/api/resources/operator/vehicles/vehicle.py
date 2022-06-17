@@ -28,10 +28,7 @@ class VehicleResource(MethodView):
             res = vehicle_schema.dump(vehicle)
             return jsonify(res), HTTPStatus.OK
         else:
-            is_active = request.args.get('is_active')
-
-            vehicles = Vehicle.query.filter_by(company_id=company_id,
-                                               is_active=True if is_active == '1' else False)
+            vehicles = Vehicle.query.filter_by(company_id=company_id)
 
             return paginate(vehicles, vehicles_schema), HTTPStatus.OK
 

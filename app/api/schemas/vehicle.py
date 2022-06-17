@@ -24,7 +24,7 @@ class VehicleSchema(ma.SQLAlchemyAutoSchema):
         required=False, validate=validate.Length(max=20))
     is_active = fields.Boolean(required=False)
 
-    features = fields.Boolean(required=False)
+    features = fields.List(fields.Dict(), required=False)
 
     min_total_base_rate = fields.Integer(required=False)
     deadhead_rate_per_mile = fields.Integer(required=False)
