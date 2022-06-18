@@ -18,6 +18,7 @@ class Vehicle(db.Model):
     vehicle_type = db.Column(JSON, nullable=False)
     pax_capacity = db.Column(db.Integer, nullable=False)
     features = db.Column(JSON, nullable=True)
+    policies = db.Column(JSON, nullable=True)
     description = db.Column(db.Text(), nullable=True)
     license_plate_number = db.Column(db.String(12), nullable=True)
     exterior_color = db.Column(db.String(120), nullable=True)

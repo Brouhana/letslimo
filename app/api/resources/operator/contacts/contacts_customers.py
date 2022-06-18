@@ -35,7 +35,7 @@ class ContactsCustomerResource(MethodView):
             query_customer_name_filter = func.lower(ContactsCustomer.full_name).contains(
                 func.lower(param_name))
             customer_contacts = ContactsCustomer.query.filter(
-                query_customer_name_filter).order_by(ContactsCustomer.full_name)
+                query_customer_name_filter).filter_by(company_id=company_id).order_by(ContactsCustomer.full_name)
         else:
             customer_contacts = ContactsCustomer.query.filter_by(
                 company_id=company_id).order_by(ContactsCustomer.full_name)

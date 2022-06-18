@@ -24,6 +24,7 @@ class VehicleSchema(ma.SQLAlchemyAutoSchema):
         required=False, validate=validate.Length(max=20))
     is_active = fields.Boolean(required=False)
     features = fields.List(fields.Dict(), required=False)
+    policies = fields.List(fields.Dict(), required=False)
     photo1 = fields.String(required=False)
     photo2 = fields.String(required=False)
     photo3 = fields.String(required=False)

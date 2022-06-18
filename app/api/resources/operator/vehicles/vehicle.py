@@ -7,6 +7,8 @@ from flask.views import MethodView
 from http import HTTPStatus
 from marshmallow import ValidationError
 import uuid
+from sqlalchemy import func
+from sqlalchemy.types import Unicode
 
 from app import db
 from app.models.vehicle import Vehicle
@@ -30,7 +32,25 @@ class VehicleResource(MethodView):
             res = vehicle_schema.dump(vehicle)
             return jsonify(res), HTTPStatus.OK
         else:
+            param_name = request.args.get('name')
+            param_pax = request.args.get('pax')
+            param_vehicle_type = request.args.get('vehicle_type')
+
             vehicles = Vehicle.query.filter_by(company_id=company_id)
+
+            if param_name:
+                query_vehicle_name_filter = func.lower(Vehicle.name).contains(
+                    func.lower(param_name))
+                vehicles = vehicles.filter(query_vehicle_name_filter)
+
+            if param_pax:
+                query_vehicle_pax_filter = Vehicle.pax_capacity >= param_pax
+                vehicles = vehicles.filter(query_vehicle_pax_filter)
+
+            if param_vehicle_type:
+                query_vehicle_type_filter = Vehicle.vehicle_type[0]['type'].astext.cast(
+                    Unicode) == param_vehicle_type
+                vehicles = vehicles.filter(query_vehicle_type_filter)
 
             return paginate(vehicles, vehicles_schema), HTTPStatus.OK
 

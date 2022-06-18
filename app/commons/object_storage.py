@@ -27,7 +27,6 @@ def upload_file(key, body, is_base64):
 
     object_url = s3client.generate_presigned_url(
         "get_object",
-        Params={"Bucket": OBJECT_STORAGE_BUCKET, "Key": s3object.key},
-        ExpiresIn=60*60)
+        Params={"Bucket": OBJECT_STORAGE_BUCKET, "Key": s3object.key})
 
     return object_url
