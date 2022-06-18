@@ -23,8 +23,10 @@ class VehicleSchema(ma.SQLAlchemyAutoSchema):
     vin_number = fields.String(
         required=False, validate=validate.Length(max=20))
     is_active = fields.Boolean(required=False)
-
     features = fields.List(fields.Dict(), required=False)
+    photo1 = fields.String(required=False)
+    photo2 = fields.String(required=False)
+    photo3 = fields.String(required=False)
 
     min_total_base_rate = fields.Integer(required=False)
     deadhead_rate_per_mile = fields.Integer(required=False)

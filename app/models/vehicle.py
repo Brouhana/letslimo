@@ -23,6 +23,9 @@ class Vehicle(db.Model):
     exterior_color = db.Column(db.String(120), nullable=True)
     vin_number = db.Column(db.String(20), nullable=True)
     is_active = db.Column(db.Boolean, default=True)
+    photo1 = db.Column(db.Text(), nullable=True)
+    photo2 = db.Column(db.Text(), nullable=True)
+    photo3 = db.Column(db.Text(), nullable=True)
 
     # Vehicle pricing
     min_total_base_rate = db.Column(db.Integer, nullable=True)
