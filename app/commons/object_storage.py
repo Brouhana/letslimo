@@ -23,7 +23,7 @@ def upload_file(key, body, is_base64):
         body = base64.b64decode(body)
 
     s3object = s3resource.Bucket(
-        OBJECT_STORAGE_BUCKET).put_object(Key=key, Body=body, ContentType='image/jpeg')
+        OBJECT_STORAGE_BUCKET).put_object(Key=key, Body=body, ACL='public-read', ContentType='image/jpeg')
 
     object_url = s3client.generate_presigned_url(
         "get_object",

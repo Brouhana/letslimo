@@ -28,31 +28,31 @@ class VehicleResource(MethodView):
 
         if vehicle_id:
             vehicle = Vehicle.query.filter_by(company_id=company_id,
-                                              id=vehicle_id).first()
+                                              uuid=vehicle_id).first()
             res = vehicle_schema.dump(vehicle)
             return jsonify(res), HTTPStatus.OK
-        else:
-            param_name = request.args.get('name')
-            param_pax = request.args.get('pax')
-            param_vehicle_type = request.args.get('vehicle_type')
 
-            vehicles = Vehicle.query.filter_by(company_id=company_id)
+        param_name = request.args.get('name')
+        param_pax = request.args.get('pax')
+        param_vehicle_type = request.args.get('vehicle_type')
 
-            if param_name:
-                query_vehicle_name_filter = func.lower(Vehicle.name).contains(
-                    func.lower(param_name))
-                vehicles = vehicles.filter(query_vehicle_name_filter)
+        vehicles = Vehicle.query.filter_by(company_id=company_id)
 
-            if param_pax:
-                query_vehicle_pax_filter = Vehicle.pax_capacity >= param_pax
-                vehicles = vehicles.filter(query_vehicle_pax_filter)
+        if param_name:
+            query_vehicle_name_filter = func.lower(Vehicle.name).contains(
+                func.lower(param_name))
+            vehicles = vehicles.filter(query_vehicle_name_filter)
 
-            if param_vehicle_type:
-                query_vehicle_type_filter = Vehicle.vehicle_type[0]['type'].astext.cast(
-                    Unicode) == param_vehicle_type
-                vehicles = vehicles.filter(query_vehicle_type_filter)
+        if param_pax:
+            query_vehicle_pax_filter = Vehicle.pax_capacity >= param_pax
+            vehicles = vehicles.filter(query_vehicle_pax_filter)
 
-            return paginate(vehicles, vehicles_schema), HTTPStatus.OK
+        if param_vehicle_type:
+            query_vehicle_type_filter = Vehicle.vehicle_type[0]['type'].astext.cast(
+                Unicode) == param_vehicle_type
+            vehicles = vehicles.filter(query_vehicle_type_filter)
+
+        return paginate(vehicles, vehicles_schema), HTTPStatus.OK
 
     def post(self, company_id, vehicle_id):
         if not can_access_company(company_id):
@@ -87,7 +87,7 @@ class VehicleResource(MethodView):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
-        vehicle = Vehicle.query.get_or_404(vehicle_id)
+        vehicle = Vehicle.query.filter_by(uuid=vehicle_id)
 
         try:
             vehicle = vehicle_schema.load(request.json, instance=vehicle)
@@ -103,7 +103,7 @@ class VehicleResource(MethodView):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
-        vehicle = Vehicle.query.get_or_404(vehicle_id)
+        vehicle = Vehicle.query.filter_by(uuid=vehicle_id)
         vehicle.is_active = False
         db.session.commit()
 
