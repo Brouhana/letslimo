@@ -36,7 +36,8 @@ class VehicleResource(MethodView):
         param_pax = request.args.get('pax')
         param_vehicle_type = request.args.get('vehicle_type')
 
-        vehicles = Vehicle.query.filter_by(company_id=company_id)
+        vehicles = Vehicle.query.filter_by(
+            company_id=company_id, is_active=True)
 
         if param_name:
             query_vehicle_name_filter = func.lower(Vehicle.name).contains(
@@ -87,10 +88,24 @@ class VehicleResource(MethodView):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
-        vehicle = Vehicle.query.filter_by(uuid=vehicle_id)
+        vehicle = Vehicle.query.filter_by(uuid=vehicle_id).first()
 
         try:
             vehicle = vehicle_schema.load(request.json, instance=vehicle)
+
+            try:
+                if vehicle.photo1:
+                    vehicle.photo1 = upload_file(
+                        key=uuid.uuid4().hex + '.jpeg', body=vehicle.photo1, is_base64=True)
+                if vehicle.photo2:
+                    vehicle.photo2 = upload_file(
+                        key=uuid.uuid4().hex + '.jpeg', body=vehicle.photo2, is_base64=True)
+                if vehicle.photo3:
+                    vehicle.photo3 = upload_file(
+                        key=uuid.uuid4().hex + '.jpeg', body=vehicle.photo3, is_base64=True)
+            except Exception:
+                pass
+
         except ValidationError as err:
             return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
 
@@ -103,7 +118,7 @@ class VehicleResource(MethodView):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
-        vehicle = Vehicle.query.filter_by(uuid=vehicle_id)
+        vehicle = Vehicle.query.filter_by(uuid=vehicle_id).first()
         vehicle.is_active = False
         db.session.commit()
 

@@ -17,16 +17,14 @@ s3config = {
 
 def upload_file(key, body, is_base64):
     s3resource = boto3.resource("s3", **s3config)
-    s3client = boto3.client("s3", **s3config)
 
     if is_base64:
         body = base64.b64decode(body)
 
-    s3object = s3resource.Bucket(
+    s3resource.Bucket(
         OBJECT_STORAGE_BUCKET).put_object(Key=key, Body=body, ACL='public-read', ContentType='image/jpeg')
 
-    object_url = s3client.generate_presigned_url(
-        "get_object",
-        Params={"Bucket": OBJECT_STORAGE_BUCKET, "Key": s3object.key})
+    object_url = 'https://{0}.{1}.cdn.digitaloceanspaces.com/{2}'.format(
+        OBJECT_STORAGE_BUCKET, OBJECT_STORAGE_REGION, key)
 
     return object_url
