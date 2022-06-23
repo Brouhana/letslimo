@@ -31,19 +31,25 @@ class UserResource(MethodView):
                 company_id=company_id, id=user_id).first()
             res = user_schema.dump(user)
             return jsonify(res), HTTPStatus.OK
-        else:
-            user_type = request.args.get('user_type')
 
-            if user_type == 'driver':
-                users = User.query.filter_by(company_id=company_id,
-                                             is_driver=True)
-            elif user_type == 'member':
-                users = User.query.filter_by(company_id=company_id,
-                                             is_member=True)
-            else:
-                return {'msg': 'Invalid user type.'}, HTTPStatus.BAD_REQUEST
+        param_user_type = request.args.get('user_type')
 
-            return paginate(users, users_schema), HTTPStatus.OK
+        users = User.query.filter_by(
+            company_id=company_id, is_active=True)
+
+        if param_user_type == 'driver':
+            users = users.filter_by(is_driver=True)
+
+        if param_user_type == 'memeber':
+            users = users.filter_by(is_member=True)
+
+        if param_user_type == 'admin':
+            users = users.filter_by(is_admin=True)
+
+        if param_user_type == 'owner':
+            users = users.filter_by(is_owner=True)
+
+        return paginate(users, users_schema), HTTPStatus.OK
 
     def post(self, company_id, user_id):
         if not can_access_company(company_id):
