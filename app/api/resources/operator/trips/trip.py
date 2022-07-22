@@ -8,6 +8,7 @@ from http import HTTPStatus
 from datetime import datetime
 from marshmallow import ValidationError
 from sqlalchemy import func
+import psycopg2.extras
 
 from app import db
 from app.models.trips import Trip
@@ -53,7 +54,6 @@ class TripResource(MethodView):
             trips = Trip.query.filter(Trip.pu_datetime.between(
                 pu_date, to_date)).filter_by(**filter_kwargs)
         elif pu_date:
-            # Query trips on pu_date
             pu_date = datetime.strptime(pu_date, '%Y-%m-%d').date()
             trips = Trip.query.filter(
                 func.date(Trip.pu_datetime) == pu_date).filter_by(**filter_kwargs)
@@ -67,14 +67,19 @@ class TripResource(MethodView):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
         try:
+            # prevents psycopg2.ProgrammingError can't adapt type 'dict' errror
+            psycopg2.extensions.register_adapter(dict, psycopg2.extras.Json)
+
             trip = trip_schema.load(
                 {**request.get_json(), 'company_id': company_id})
-
-            db.session.add(trip)
-            db.session.commit()
+            trip.pu_datetime = datetime.strptime(trip.pu_datetime,
+                                                 "%a %b %d %Y %H:%M:%S")
 
         except ValidationError as err:
             return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
+
+        db.session.add(trip)
+        db.session.commit()
 
         return {'msg': 'Trip scheduled', 'trip': trip_schema.dump(trip)}, HTTPStatus.OK
 

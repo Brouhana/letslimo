@@ -13,7 +13,7 @@ class TripSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
     company_id = fields.Integer(required=True)
-    stops = fields.List(fields.Dict(), required=False)
+    stops = fields.List(fields.String(), required=False)
     contacts_customer = fields.Nested(
         ContactsCustomerSchema,
         exclude=('notes', 'created_on', 'home_address',
@@ -25,39 +25,35 @@ class TripSchema(ma.SQLAlchemyAutoSchema):
     )
     category = fields.String(required=True, validate=validate.Length(max=50))
     vehicle_id = fields.Integer(required=True)
-    type = fields.String(required=True, validate=validate.Length(max=15))
-    pu_datetime = fields.DateTime(required=False)
+    type = fields.List(fields.Dict(), required=True)
+    pu_datetime = fields.String(required=True)
     pu_address = fields.String(
         required=False, validate=validate.Length(max=255))
     pu_is_flight = fields.Boolean(required=False, default=False)
-    pu_arrival_airport = fields.String(
-        required=False, validate=validate.Length(max=255))
+    pu_arrival_airport = fields.Dict(required=False)
     pu_flight_code = fields.String(
         required=False, validate=validate.Length(max=6))
-    pu_airline = fields.String(
-        required=False, validate=validate.Length(max=255))
+    pu_airline = fields.Dict(required=False)
     do_datetime = fields.DateTime(required=False)
     do_address = fields.String(
-        required=False, validate=validate.Length(max=255))
+        required=False, allow_none=True, validate=validate.Length(max=255))
     do_is_flight = fields.Boolean(required=False, default=False)
-    do_departure_airport = fields.String(
-        required=False, validate=validate.Length(max=255))
+    do_departure_airport = fields.Dict(required=False)
     do_flight_code = fields.String(
         required=False, validate=validate.Length(max=6))
-    do_airline = fields.String(
-        required=False, validate=validate.Length(max=255))
+    do_airline = fields.Dict(keys=fields.Str(), required=False)
     pu_pax = fields.Integer(required=True)
     do_pax = fields.Integer(required=False)
     notes = fields.String(required=False)
     driver_notes = fields.String(required=False)
     status = fields.Integer(required=False)
-    price_gratituity = fields.Float(required=False)
-    price_tax = fields.Float(required=False)
-    price_tolls = fields.Float(required=False)
-    price_discount = fields.Float(required=False)
-    price_other1 = fields.Float(required=False)
-    price_other2 = fields.Float(required=False)
-    price_other3 = fields.Float(required=False)
-    price_other4 = fields.Float(required=False)
+    price_gratuity = fields.Dict(required=False)
+    price_tax = fields.Dict(required=False)
+    price_tolls = fields.Dict(required=False)
+    price_discounts = fields.Dict(required=False)
+    price_other1 = fields.Dict(required=False)
+    price_other2 = fields.Dict(required=False)
+    price_other3 = fields.Dict(required=False)
+    price_other4 = fields.Dict(required=False)
     base_rate = fields.Float(required=False)
     is_active = fields.Boolean(required=False, default=True)
