@@ -22,7 +22,9 @@ class Company(db.Model):
     # Stripe connected account
     stripe_account = db.Column(db.String(255), nullable=True)
 
-    enabled_auto_invoice = db.Column(db.Boolean, default=False)
+    setting_enabled_auto_invoice = db.Column(db.Boolean, default=False)
+    setting_timezone = db.Column(db.String(255), nullable=True)
+    # timezone = db.Column(db.String(255), nullable=False)
 
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     last_updated = db.Column(db.DateTime, onupdate=db.func.now())

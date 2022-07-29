@@ -56,8 +56,9 @@ class Trip(db.Model):
     price_other2 = db.Column(JSONB, nullable=True)
     price_other3 = db.Column(JSONB, nullable=True)
     price_other4 = db.Column(JSONB, nullable=True)
-    base_rate = db.Column(db.Float, nullable=True)
+    price_base_rate = db.Column(JSONB, nullable=True)
     stops = db.Column(JSONB, nullable=True)
+    passenger = db.Column(JSONB, nullable=True)
     is_active = db.Column(db.Boolean, nullable=True, default=True)
 
     created_on = db.Column(db.DateTime, server_default=db.func.now())

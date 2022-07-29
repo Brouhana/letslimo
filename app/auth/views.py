@@ -38,7 +38,8 @@ def login():
                 'is_driver': user.is_driver,
                 'is_member': user.is_member,
                 'is_admin': user.is_admin,
-                'is_owner': user.is_owner}
+                'is_owner': user.is_owner,
+                'timezone': user.company.setting_timezone}
 
     access_token = create_access_token(identity=identity)
     refresh_token = create_refresh_token(identity=identity)

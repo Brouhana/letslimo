@@ -12,10 +12,15 @@ import psycopg2.extras
 
 from app import db
 from app.models.trips import Trip
+from app.models.company import Company
+from app.models.vehicle import Vehicle
+from app.models.contacts_customers import ContactsCustomer
 from app.api.schemas.trips import TripSchema
 from app.middleware.role_required import role_required
 from app.commons.helpers import can_access_company
 from app.commons.pagination import paginate
+from app.commons.mail import send_reservation_conf
+import json
 
 
 class TripResource(MethodView):
@@ -66,6 +71,8 @@ class TripResource(MethodView):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
+        can_send_email = request.args.get('email')
+
         try:
             # prevents psycopg2.ProgrammingError can't adapt type 'dict' errror
             psycopg2.extensions.register_adapter(dict, psycopg2.extras.Json)
@@ -74,6 +81,30 @@ class TripResource(MethodView):
                 {**request.get_json(), 'company_id': company_id})
             trip.pu_datetime = datetime.strptime(trip.pu_datetime,
                                                  "%a %b %d %Y %H:%M:%S")
+
+            if (can_send_email):
+                company = Company.query.filter_by(
+                    id=company_id).first()
+                contacts_customer = ContactsCustomer.query.filter_by(
+                    id=trip.contacts_customer_id).first()
+                vehicle = Vehicle.query.filter_by(
+                    id=trip.vehicle_id).first()
+
+                if (contacts_customer is None):
+                    return {'msg': 'Error getting customer contact'}, HTTPStatus.INTERNAL_SERVER_ERROR
+
+                send_reservation_conf(to=contacts_customer.email,
+                                      company_name=company.company_name,
+                                      booking_contact_name=contacts_customer.first_name,
+                                      vehicle=vehicle.name,
+                                      pu_date=trip.pu_datetime.strftime(
+                                          "%m/%d/%Y"),
+                                      pu_time=trip.pu_datetime.strftime(
+                                          "%H:%M:%S"),
+                                      passenger_name=contacts_customer.first_name,
+                                      company_email=company.company_booking_email,
+                                      company_phone=company.company_phone,
+                                      company_address=company.company_address)
 
         except ValidationError as err:
             return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY

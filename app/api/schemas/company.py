@@ -17,4 +17,5 @@ class CompanySchema(ma.SQLAlchemyAutoSchema):
     company_website_url = fields.URL(is_required=False)
     company_general_email = fields.Email(is_required=False)
     company_booking_email = fields.Email(is_required=False)
+    setting_timezone = fields.URL(is_required=True)
     phone = fields.String(required=True, validate=validate.Length(max=20))
