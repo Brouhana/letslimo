@@ -36,7 +36,7 @@ class TripResource(MethodView):
 
             return jsonify(trip_schema.dump(trip)), HTTPStatus.OK
 
-        pu_date = request.args.get('pu_date')
+        from_date = request.args.get('from_date')
         to_date = request.args.get('to_date')
         driver = request.args.get('driver')
         vehicle = request.args.get('vehicle')
@@ -51,19 +51,20 @@ class TripResource(MethodView):
         if driver:
             filter_kwargs['driver_user_id'] = driver
 
-        if pu_date and to_date:
-            # Query trips between pu_date and to_date
-            # pu_date is treated as start date, to_date as end
-            pu_date = datetime.strptime(pu_date, '%Y-%m-%d').date()
+        if from_date and to_date:
+            # Query trips between from_date and to_date
+            # from_date is treated as start date, to_date as end
+            from_date = datetime.strptime(from_date, '%Y-%m-%d').date()
             to_date = datetime.strptime(to_date, '%Y-%m-%d').date()
             trips = Trip.query.filter(Trip.pu_datetime.between(
-                pu_date, to_date)).filter_by(**filter_kwargs)
-        elif pu_date:
-            pu_date = datetime.strptime(pu_date, '%Y-%m-%d').date()
+                from_date, to_date)).order_by(Trip.pu_datetime).filter_by(**filter_kwargs)
+        elif from_date:
+            from_date = datetime.strptime(from_date, '%Y-%m-%d').date()
             trips = Trip.query.filter(
-                func.date(Trip.pu_datetime) == pu_date).filter_by(**filter_kwargs)
+                func.date(Trip.pu_datetime) == from_date).order_by(Trip.pu_datetime).filter_by(**filter_kwargs)
         else:
-            trips = Trip.query.filter_by(**filter_kwargs)
+            trips = Trip.query.order_by(
+                Trip.pu_datetime).filter_by(**filter_kwargs)
 
         return paginate(trips, trips_schema), HTTPStatus.OK
 
