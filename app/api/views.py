@@ -70,7 +70,7 @@ api_operator_bp.add_url_rule('/<int:company_id>/trips',
                              methods=['GET', 'POST'],
                              defaults={'trip_id': None},
                              view_func=trip_view_func)
-api_operator_bp.add_url_rule('/<int:company_id>/trips/<int:trip_id>',
+api_operator_bp.add_url_rule('/<int:company_id>/trips/<string:trip_id>',
                              methods=['GET', 'PUT', 'DELETE'],
                              view_func=trip_view_func)
 

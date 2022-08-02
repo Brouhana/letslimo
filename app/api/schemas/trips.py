@@ -2,6 +2,7 @@ from app import ma, db
 from app.models.trips import Trip
 from app.api.schemas.user import UserSchema
 from app.api.schemas.contacts_customer import ContactsCustomerSchema
+from app.api.schemas.vehicle import VehicleSchema
 from marshmallow import fields, validate
 
 
@@ -26,6 +27,10 @@ class TripSchema(ma.SQLAlchemyAutoSchema):
     )
     category = fields.String(required=True, validate=validate.Length(max=50))
     vehicle_id = fields.Integer(required=True)
+    vehicle = fields.Nested(
+        VehicleSchema,
+        include=('created_on', 'last_updated', 'company_id'),
+        required=True)
     type = fields.List(fields.Dict(), required=True)
     pu_datetime = fields.String(required=True)
     pu_address = fields.String(allow_none=True,

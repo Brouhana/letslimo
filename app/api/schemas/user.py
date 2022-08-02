@@ -17,6 +17,8 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         required=True, validate=validate.Length(min=2, max=50))
     last_name = fields.String(
         required=True, validate=validate.Length(min=2, max=50))
+    full_name = fields.String(
+        required=False, validate=validate.Length(min=1, max=180))
     phone = fields.String(
         required=True, validate=validate.Length(max=20))
     address = fields.String(required=False, validate=validate.Length(max=255))

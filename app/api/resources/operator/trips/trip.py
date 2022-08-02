@@ -31,8 +31,8 @@ class TripResource(MethodView):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
 
         if trip_id:
-            trip = Trip.query.filter_by(
-                company_id=company_id, id=trip_id).first()
+            trip = Trip.query.filter_by(company_id=company_id,
+                                        uuid=trip_id).first()
 
             return jsonify(trip_schema.dump(trip)), HTTPStatus.OK
 
@@ -118,7 +118,8 @@ class TripResource(MethodView):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
-        trip = Trip.query.get_or_404(trip_id)
+        trip = Trip.query.filter_by(company_id=company_id,
+                                    uuid=trip_id).first()
 
         try:
             trip = trip_schema.load(request.json, instance=trip)
@@ -134,7 +135,8 @@ class TripResource(MethodView):
         if not can_access_company(company_id):
             return {'msg': 'You are not authorized to access this company.'}, HTTPStatus.UNAUTHORIZED
 
-        trip = Trip.query.get_or_404(trip_id)
+        trip = Trip.query.filter_by(company_id=company_id,
+                                    uuid=trip_id).first()
         trip.is_active = False
         db.session.commit()
 

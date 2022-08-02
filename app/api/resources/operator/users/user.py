@@ -65,6 +65,10 @@ class UserResource(MethodView):
                                                'invited_by_user_id': invited_by_user_id})
             if UserInvite.query.filter_by(email=invitee.email).first() is not None:
                 return {'error': 'Email already exists.'}, HTTPStatus.UNPROCESSABLE_ENTITY
+
+            invitee.first_name = invitee.first_name.capitalize().strip()
+            invitee.last_name = invitee.last_name.capitalize().strip()
+            invitee.full_name = invitee.first_name + ' ' + invitee.last_name
         except ValidationError as err:
             return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
 

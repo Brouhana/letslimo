@@ -21,6 +21,8 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     first_name = db.Column(db.String(90), nullable=False)
     last_name = db.Column(db.String(90), nullable=False)
+    full_name = db.Column(db.String(180), nullable=True)
+    # full_name = db.Column(db.String(180), nullable=False)
     phone = db.Column(db.String(120), nullable=False)
     address = db.Column(db.String(255), nullable=True)
     DL_number = db.Column(db.String(255), nullable=True)
