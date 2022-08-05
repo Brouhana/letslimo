@@ -27,7 +27,7 @@ class MailResource(MethodView):
                 trip_id = req['trip_id']
                 trip = Trip.query.filter_by(company_id=company_id,
                                             uuid=trip_id).first()
-                send_reservation_conf(trip)
+                send_reservation_conf(trip=trip)
                 return {'msg': 'Email sent'}, HTTPStatus.OK
         except Exception:
             return {'msg': 'Error sending email'}, HTTPStatus.OK
