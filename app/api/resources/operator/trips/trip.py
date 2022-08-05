@@ -9,6 +9,7 @@ from datetime import datetime
 from marshmallow import ValidationError
 from sqlalchemy import func
 import psycopg2.extras
+from secrets import token_urlsafe
 
 from app import db
 from app.models.trips import Trip
@@ -41,6 +42,7 @@ class TripResource(MethodView):
         driver = request.args.get('driver')
         vehicle = request.args.get('vehicle')
         status = request.args.get('status')
+        trip_code = request.args.get('trip_code')
 
         filter_kwargs = {'company_id': company_id}
 
@@ -50,6 +52,8 @@ class TripResource(MethodView):
             filter_kwargs['status'] = status
         if driver:
             filter_kwargs['driver_user_id'] = driver
+            if driver == 'unassigned':
+                filter_kwargs['driver_user_id'] = None
 
         if from_date and to_date:
             # Query trips between from_date and to_date
@@ -65,6 +69,11 @@ class TripResource(MethodView):
         else:
             trips = Trip.query.order_by(
                 Trip.pu_datetime).filter_by(**filter_kwargs)
+
+        if trip_code:
+            trip_code = trip_code.upper()
+            trips = Trip.query.filter(
+                Trip.trip_code.contains(trip_code))
 
         return paginate(trips, trips_schema), HTTPStatus.OK
 
@@ -82,36 +91,17 @@ class TripResource(MethodView):
                 {**request.get_json(), 'company_id': company_id})
             trip.pu_datetime = datetime.strptime(trip.pu_datetime,
                                                  "%a %b %d %Y %H:%M:%S")
-
-            if (can_send_email):
-                company = Company.query.filter_by(
-                    id=company_id).first()
-                contacts_customer = ContactsCustomer.query.filter_by(
-                    id=trip.contacts_customer_id).first()
-                vehicle = Vehicle.query.filter_by(
-                    id=trip.vehicle_id).first()
-
-                if (contacts_customer is None):
-                    return {'msg': 'Error getting customer contact'}, HTTPStatus.INTERNAL_SERVER_ERROR
-
-                send_reservation_conf(to=contacts_customer.email,
-                                      company_name=company.company_name,
-                                      booking_contact_name=contacts_customer.first_name,
-                                      vehicle=vehicle.name,
-                                      pu_date=trip.pu_datetime.strftime(
-                                          "%m/%d/%Y"),
-                                      pu_time=trip.pu_datetime.strftime(
-                                          "%H:%M:%S"),
-                                      passenger_name=contacts_customer.first_name,
-                                      company_email=company.company_booking_email,
-                                      company_phone=company.company_phone,
-                                      company_address=company.company_address)
+            trip.trip_code = ''.join([c for c in token_urlsafe(
+                10) if c not in '-_abcdefghijklmnopqrstuvwxyzO0lI'])[:5]
 
         except ValidationError as err:
             return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
 
         db.session.add(trip)
         db.session.commit()
+
+        if (can_send_email):
+            send_reservation_conf(trip=trip)
 
         return {'msg': 'Trip scheduled', 'trip': trip_schema.dump(trip)}, HTTPStatus.OK
 

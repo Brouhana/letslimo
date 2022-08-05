@@ -30,6 +30,10 @@ class Trip(db.Model):
     vehicle = db.relationship(
         'Vehicle', backref='trips', lazy=True)
 
+    returntrip_id = db.Column(db.Integer, db.ForeignKey('trips.id'))
+    returntrip = db.relationship('Trip')
+
+    trip_code = db.Column(db.String(10), nullable=False)
     type = db.Column(JSONB, nullable=False)
     pu_datetime = db.Column(db.DateTime, nullable=False)
     pu_address = db.Column(db.String(255), nullable=True)

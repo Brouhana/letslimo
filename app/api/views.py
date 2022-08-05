@@ -7,6 +7,7 @@ from app.api.resources.operator.contacts.contacts_company import ContactsCompany
 from app.api.resources.operator.contacts.contacts_customers import ContactsCustomerResource
 from app.api.resources.operator.trips.trip import TripResource
 from app.api.resources.operator.invoices.invoice import InvoiceResource
+from app.api.resources.operator.misc.mail import MailResource
 
 
 api_operator_bp = Blueprint(
@@ -22,6 +23,7 @@ contacts_customer_view_func = ContactsCustomerResource.as_view(
     'contacts_customer')
 trip_view_func = TripResource.as_view('trip')
 invoice_view_func = InvoiceResource.as_view('invoice')
+mail_view_func = MailResource.as_view('mail')
 
 
 api_operator_bp.add_url_rule('/<int:company_id>',
@@ -83,3 +85,8 @@ api_operator_bp.add_url_rule('/<int:company_id>/invoices',
 api_operator_bp.add_url_rule('/<int:company_id>/invoices/<int:invoice_id>',
                              methods=['GET', 'PUT', 'DELETE'],
                              view_func=invoice_view_func)
+
+# /<int:company_id>/mail
+api_operator_bp.add_url_rule('/<int:company_id>/mail',
+                             methods=['POST'],
+                             view_func=mail_view_func)

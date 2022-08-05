@@ -1,5 +1,7 @@
 import requests
 import os
+from flask_jwt_extended import get_jwt
+import pytz
 
 POSTMARK_EMAIL_API = "https://api.postmarkapp.com/email"
 POSTMARK_EMAIL_TEMPLATE_API = "https://api.postmarkapp.com/email/withTemplate"
@@ -12,16 +14,30 @@ headers = {
 }
 
 
-def send_reservation_conf(to,
-                          company_name,
-                          booking_contact_name,
-                          vehicle,
-                          pu_date,
-                          pu_time,
-                          passenger_name,
-                          company_email,
-                          company_phone,
-                          company_address):
+def send_reservation_conf(trip):
+    to = trip.contacts_customer.email
+    company_name = trip.company.company_name
+    booking_contact_name = trip.contacts_customer.full_name
+    vehicle = trip.vehicle.name
+    trip_code = trip.trip_code
+    passenger = trip.passenger
+    company_email = trip.company.company_booking_email
+    company_phone = trip.company.company_phone
+    company_address = trip.company.company_address
+
+    if (trip.passenger is not None):
+        passenger = trip.passenger['full_name']
+    else:
+        passenger = booking_contact_name
+
+    pu_date = trip.pu_datetime.strftime(
+        "%m/%d/%Y"),
+    pu_time = trip.pu_datetime.strftime(
+        "%I:%M %p"),
+
+    text = 'Your reservation for {} on {} at {} is below.'.format(
+        vehicle, *pu_date, *pu_time)
+
     payload = {
         'From': '{} {}'.format(company_name, NO_REPLY_EMAIL),
         'To': to,
@@ -32,10 +48,9 @@ def send_reservation_conf(to,
             'company_email': company_email,
             'company_address': company_address,
             'company_phone': company_phone,
-            'passenger_name': passenger_name,
-            'pu_time': pu_time,
-            'pu_date': pu_date,
-            'vehicle': vehicle,
+            'passenger_name': passenger,
+            'text': text,
+            'trip_code': trip_code,
             'booking_contact_name': booking_contact_name,
         }
     }
@@ -44,6 +59,13 @@ def send_reservation_conf(to,
                              headers=headers, json=payload)
 
     return response.status_code, response.json()
+
+    # utc = pytz.timezone('UTC')
+    # operator_tz = pytz.timezone(get_jwt()['sub']['timezone'])
+    # utc_date = utc.localize(pu_date)
+    # utc_time = utc.localize(pu_time)
+    # operator_tz_date = operator_tz.normalize(utc_date.astimezone(operator_tz))
+    # operator_tz_time = operator_tz.normalize(utc_time.astimezone(operator_tz))
 
 
 def send_invite(to,

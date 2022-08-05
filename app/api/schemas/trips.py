@@ -25,6 +25,7 @@ class TripSchema(ma.SQLAlchemyAutoSchema):
         'created_on', 'is_admin', 'is_owner', 'is_member',
         'is_driver', 'last_updated', 'company_id', 'DL_expr', 'DL_number', 'DL_state'),
     )
+    trip_code = fields.String(required=False)
     category = fields.String(required=True, validate=validate.Length(max=50))
     vehicle_id = fields.Integer(required=True)
     vehicle = fields.Nested(
