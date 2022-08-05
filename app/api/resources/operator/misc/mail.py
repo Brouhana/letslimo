@@ -1,23 +1,13 @@
 from flask import (
     request,
-    jsonify,
     current_app as app
 )
 from flask.views import MethodView
 from http import HTTPStatus
-from marshmallow import ValidationError
-from datetime import datetime
-from sqlalchemy import func, or_, and_
 
-from app import db
-from app.models.invoices import Invoice
-from app.models.contacts_customers import ContactsCustomer
 from app.models.trips import Trip
-from app.models.company import Company
-from app.api.schemas.invoice import InvoiceSchema
 from app.middleware.role_required import role_required
 from app.commons.helpers import can_access_company
-from app.commons.pagination import paginate
 from app.commons.mail import send_reservation_conf
 
 
