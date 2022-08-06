@@ -1,7 +1,6 @@
 import requests
 import os
-from flask_jwt_extended import get_jwt
-import pytz
+from app.commons.localdatetime import get_local_datetime
 
 POSTMARK_EMAIL_API = "https://api.postmarkapp.com/email"
 POSTMARK_EMAIL_TEMPLATE_API = "https://api.postmarkapp.com/email/withTemplate"
@@ -30,9 +29,16 @@ def send_reservation_conf(trip):
     else:
         passenger = booking_contact_name
 
-    pu_date = trip.pu_datetime.strftime(
+    # utc = pytz.timezone('UTC')
+    # operator_tz = pytz.timezone(get_jwt()['sub']['timezone'])
+    # utc_date = utc.localize(trip.pu_datetime)
+    # utc_time = utc.localize(trip.pu_datetime)
+    # operator_tz_date = operator_tz.normalize(utc_date.astimezone(operator_tz))
+    # operator_tz_time = operator_tz.normalize(utc_time.astimezone(operator_tz))
+
+    pu_date = get_local_datetime(trip.pu_datetime).strftime(
         "%m/%d/%Y"),
-    pu_time = trip.pu_datetime.strftime(
+    pu_time = get_local_datetime(trip.pu_datetime).strftime(
         "%I:%M %p"),
 
     text = 'Your reservation for {} on {} at {} is below.'.format(
@@ -59,13 +65,6 @@ def send_reservation_conf(trip):
                              headers=headers, json=payload)
 
     return response.status_code, response.json()
-
-    # utc = pytz.timezone('UTC')
-    # operator_tz = pytz.timezone(get_jwt()['sub']['timezone'])
-    # utc_date = utc.localize(pu_date)
-    # utc_time = utc.localize(pu_time)
-    # operator_tz_date = operator_tz.normalize(utc_date.astimezone(operator_tz))
-    # operator_tz_time = operator_tz.normalize(utc_time.astimezone(operator_tz))
 
 
 def send_invite(to,
