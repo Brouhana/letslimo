@@ -31,9 +31,17 @@ class Trip(db.Model):
         'Vehicle', backref='trips', lazy=True)
 
     returntrip_id = db.Column(db.Integer, db.ForeignKey('trips.id'))
-    returntrip = db.relationship('Trip')
+    returntrip = db.relationship(
+        'Trip', backref='trips', remote_side="Trip.id")
 
-    trip_code = db.Column(db.String(10), nullable=False)
+    tripgroup_id = db.Column(db.Integer, db.ForeignKey(
+        'trip_groups.id'), nullable=True)
+    tripgroup = db.relationship('TripGroup', backref='trips', lazy=True)
+
+    is_quote = db.Column(db.Boolean, nullable=True, default=False)
+
+    trip_code_sub = db.Column(
+        db.String(10), nullable=False)
     type = db.Column(JSONB, nullable=False)
     pu_datetime = db.Column(db.DateTime, nullable=False)
     pu_address = db.Column(db.String(255), nullable=True)

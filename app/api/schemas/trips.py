@@ -3,11 +3,12 @@ from app.models.trips import Trip
 from app.api.schemas.user import UserSchema
 from app.api.schemas.contacts_customer import ContactsCustomerSchema
 from app.api.schemas.vehicle import VehicleSchema
+from app.api.schemas.trip_group import TripGroupSchema
 from marshmallow import fields, validate
 
 
 class TripSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
+    class Meta():
         model = Trip
         sqla_session = db.session
         load_instance = True
@@ -25,13 +26,20 @@ class TripSchema(ma.SQLAlchemyAutoSchema):
         'created_on', 'is_admin', 'is_owner', 'is_member',
         'is_driver', 'last_updated', 'company_id', 'DL_expr', 'DL_number', 'DL_state'),
     )
-    trip_code = fields.String(required=False)
+    trip_code_sub = fields.String(required=False)
     category = fields.String(required=True, validate=validate.Length(max=50))
     vehicle_id = fields.Integer(required=True)
     vehicle = fields.Nested(
         VehicleSchema,
         include=('created_on', 'last_updated', 'company_id'),
         required=True)
+
+    returntrip_id = fields.Integer(required=False)
+    returntrip = fields.Nested('self', exclude=(
+        'returntrip', 'company_id', 'contacts_customer', 'contacts_customer_id',), many=False)
+
+    tripgroup = fields.Nested(TripGroupSchema)
+
     type = fields.List(fields.Dict(), required=True)
     pu_datetime = fields.String(required=True)
     pu_address = fields.String(allow_none=True,

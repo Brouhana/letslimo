@@ -18,7 +18,7 @@ def send_reservation_conf(trip):
     company_name = trip.company.company_name
     booking_contact_name = trip.contacts_customer.full_name
     vehicle = trip.vehicle.name
-    trip_code = trip.trip_code
+    trip_code = trip.trip_code_sub
     passenger = trip.passenger
     company_email = trip.company.company_booking_email
     company_phone = trip.company.company_phone

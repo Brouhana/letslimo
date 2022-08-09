@@ -14,16 +14,15 @@ from secrets import token_urlsafe
 
 from app import db
 from app.models.trips import Trip
-from app.models.company import Company
-from app.models.vehicle import Vehicle
-from app.models.contacts_customers import ContactsCustomer
+from app.models.trip_groups import TripGroup
 from app.api.schemas.trips import TripSchema
 from app.middleware.role_required import role_required
 from app.commons.helpers import can_access_company
 from app.commons.pagination import paginate
 from app.commons.mail import send_reservation_conf
-from app.commons.localdatetime import get_local_datetime
-import json
+from app.commons.localdatetime import tz_diff_hours
+from flask_jwt_extended import get_jwt
+import pytz
 
 
 class TripResource(MethodView):
@@ -34,10 +33,10 @@ class TripResource(MethodView):
             return jsonify({'msg': 'You are not authorized to access this company.'}), HTTPStatus.UNAUTHORIZED
 
         if trip_id:
-            trip = Trip.query.filter_by(company_id=company_id,
-                                        uuid=trip_id).first()
-
-            return jsonify(trip_schema.dump(trip)), HTTPStatus.OK
+            trip = Trip.query.filter_by(
+                company_id=company_id, uuid=trip_id).first()
+            tripgroup = {'group': trips_schema.dump(trip.tripgroup.trips)}
+            return jsonify(trip_schema.dump(trip), tripgroup), HTTPStatus.OK
 
         from_date = request.args.get('from_date')
         to_date = request.args.get('to_date')
@@ -45,7 +44,7 @@ class TripResource(MethodView):
         driver = request.args.get('driver')
         vehicle = request.args.get('vehicle')
         status = request.args.get('status')
-        trip_code = request.args.get('trip_code')
+        trip_code_sub = request.args.get('trip_code')
 
         filter_kwargs = {'company_id': company_id}
 
@@ -62,11 +61,13 @@ class TripResource(MethodView):
             from_date = datetime.strptime(from_date, '%Y-%m-%d')
             from_date_UTCstart = (from_date + timedelta(hours=5))
             from_date_UTCend = (
-                from_date + timedelta(days=1, hours=4, minutes=49))
+                from_date + timedelta(days=1, hours=5))
+
+            tz_diff_hours()
         if to_date:
             to_date = datetime.strptime(to_date, '%Y-%m-%d')
             to_date_UTCstart = (to_date + timedelta(hours=5))
-            to_date_UTCend = (to_date + timedelta(days=1, hours=4, minutes=49))
+            to_date_UTCend = (to_date + timedelta(days=1, hours=4))
 
         if from_date and to_date:
             # Query trips between from_date and to_date
@@ -80,10 +81,10 @@ class TripResource(MethodView):
             trips = Trip.query.order_by(
                 Trip.pu_datetime)
 
-        if trip_code:
-            trip_code = trip_code.upper()
+        if trip_code_sub:
+            trip_code_sub = trip_code_sub.upper()
             trips = Trip.query.filter(
-                Trip.trip_code.contains(trip_code))
+                Trip.trip_code_sub.contains(trip_code_sub))
 
         trips = trips.filter_by(**filter_kwargs)
 
@@ -101,11 +102,25 @@ class TripResource(MethodView):
 
             trip = trip_schema.load(
                 {**request.get_json(), 'company_id': company_id})
-            trip.trip_code = ''.join([c for c in token_urlsafe(
-                10) if c not in '-_abcdefghijklmnopqrstuvwxyzO0lI'])[:5]
 
         except ValidationError as err:
             return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
+
+        if trip.tripgroup_id is not None:
+            trip_group = TripGroup.query.filter_by(
+                id=trip.tripgroup_id).first()
+        else:
+            trip_code = ''.join([c for c in token_urlsafe(10)
+                                 if c not in '-_abcdefghijklmnopqrstuvwxyzO0lI'])[:4]
+            trip_group = TripGroup(company_id=company_id,
+                                   trip_code=trip_code)
+            db.session.add(trip_group)
+            db.session.flush()
+            trip.tripgroup_id = trip_group.id
+
+        trip_sub_code = ''.join([c for c in token_urlsafe(
+            10) if c not in '-_abcdefghijklmnopqrstuvwxyzO0lI'])[:3]
+        trip.trip_code_sub = trip_group.trip_code + '-' + trip_sub_code
 
         db.session.add(trip)
         db.session.commit()
