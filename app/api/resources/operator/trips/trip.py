@@ -20,9 +20,7 @@ from app.middleware.role_required import role_required
 from app.commons.helpers import can_access_company
 from app.commons.pagination import paginate
 from app.commons.mail import send_reservation_conf
-from app.commons.localdatetime import tz_diff_hours
-from flask_jwt_extended import get_jwt
-import pytz
+# from app.commons.localdatetime import tz_diff_hours
 
 
 class TripResource(MethodView):
@@ -57,21 +55,18 @@ class TripResource(MethodView):
             if driver == 'unassigned':
                 filter_kwargs['driver_user_id'] = None
 
+        # convert to datetimes
+        # adjust for UTC to Local TZ hours difference
         if from_date:
             from_date = datetime.strptime(from_date, '%Y-%m-%d')
             from_date_UTCstart = (from_date + timedelta(hours=5))
             from_date_UTCend = (
                 from_date + timedelta(days=1, hours=5))
-
-            tz_diff_hours()
         if to_date:
             to_date = datetime.strptime(to_date, '%Y-%m-%d')
-            to_date_UTCstart = (to_date + timedelta(hours=5))
             to_date_UTCend = (to_date + timedelta(days=1, hours=4))
 
         if from_date and to_date:
-            # Query trips between from_date and to_date
-            # from_date is treated as start date, to_date as end
             trips = Trip.query.filter(Trip.pu_datetime.between(
                 from_date_UTCstart, to_date_UTCend)).order_by(Trip.pu_datetime)
         elif from_date:
@@ -99,31 +94,41 @@ class TripResource(MethodView):
         try:
             # prevents psycopg2.ProgrammingError can't adapt type 'dict' errror
             psycopg2.extensions.register_adapter(dict, psycopg2.extras.Json)
-
             trip = trip_schema.load(
                 {**request.get_json(), 'company_id': company_id})
-
         except ValidationError as err:
             return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
 
-        if trip.tripgroup_id is not None:
-            trip_group = TripGroup.query.filter_by(
-                id=trip.tripgroup_id).first()
-        else:
-            trip_code = ''.join([c for c in token_urlsafe(10)
-                                 if c not in '-_abcdefghijklmnopqrstuvwxyzO0lI'])[:4]
-            trip_group = TripGroup(company_id=company_id,
-                                   trip_code=trip_code)
-            db.session.add(trip_group)
-            db.session.flush()
-            trip.tripgroup_id = trip_group.id
+        try:
+            if trip.tripgroup_id is not None:
+                trip_group = TripGroup.query.filter_by(
+                    id=trip.tripgroup_id).first()
+            else:
+                trip_code = ''.join([c for c in token_urlsafe(10)
+                                    if c not in '-_abcdefghijklmnopqrstuvwxyzO0lI'])[:4]
+                trip_group = TripGroup(company_id=company_id,
+                                       trip_code=trip_code)
+                db.session.add(trip_group)
+                db.session.flush()
+                trip.tripgroup_id = trip_group.id
 
-        trip_sub_code = ''.join([c for c in token_urlsafe(
-            10) if c not in '-_abcdefghijklmnopqrstuvwxyzO0lI'])[:3]
-        trip.trip_code_sub = trip_group.trip_code + '-' + trip_sub_code
+            trip_sub_code = ''.join([c for c in token_urlsafe(
+                10) if c not in '-_abcdefghijklmnopqrstuvwxyzO0lI'])[:3]
+            trip.trip_code_sub = trip_group.trip_code + '-' + trip_sub_code
 
-        db.session.add(trip)
-        db.session.commit()
+            db.session.add(trip)
+            db.session.commit()
+
+            # returntrip is implicity implied by the presence of parenttrip_id
+            # If parenttrip_id is supplied, then assign query the parent trip
+            # and update parent's roundtrip_id to the id of the new trip
+            if trip.parenttrip_id:
+                parent_trip = Trip.query.filter_by(
+                    company_id=company_id, id=trip.parenttrip_id).first()
+                parent_trip.returntrip_id = trip.id
+                db.session.commit()
+        except Exception:
+            return {'msg': 'Error adding trip'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
         if (can_send_email):
             send_reservation_conf(trip=trip)
@@ -136,14 +141,12 @@ class TripResource(MethodView):
 
         trip = Trip.query.filter_by(company_id=company_id,
                                     uuid=trip_id).first()
-
         try:
             trip = trip_schema.load(request.json, instance=trip)
         except ValidationError as err:
             return {'errors': err.messages}, HTTPStatus.UNPROCESSABLE_ENTITY
 
         db.session.commit()
-
         return {'msg': 'Trip information updated',
                 'trip': trip_schema.dump(trip)}, HTTPStatus.OK
 
@@ -155,7 +158,6 @@ class TripResource(MethodView):
                                     uuid=trip_id).first()
         trip.is_active = False
         db.session.commit()
-
         return {'msg': 'Trip hidden'}, HTTPStatus.OK
 
 

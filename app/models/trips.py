@@ -32,7 +32,10 @@ class Trip(db.Model):
 
     returntrip_id = db.Column(db.Integer, db.ForeignKey('trips.id'))
     returntrip = db.relationship(
-        'Trip', backref='trips', remote_side="Trip.id")
+        'Trip', backref='return', remote_side='Trip.id', foreign_keys=[returntrip_id])
+    parenttrip_id = db.Column(db.Integer, db.ForeignKey('trips.id'))
+    parenttrip = db.relationship(
+        'Trip', backref='parent', remote_side='Trip.id', foreign_keys=[parenttrip_id])
 
     tripgroup_id = db.Column(db.Integer, db.ForeignKey(
         'trip_groups.id'), nullable=True)

@@ -37,6 +37,9 @@ class TripSchema(ma.SQLAlchemyAutoSchema):
     returntrip_id = fields.Integer(required=False)
     returntrip = fields.Nested('self', exclude=(
         'returntrip', 'company_id', 'contacts_customer', 'contacts_customer_id',), many=False)
+    parenttrip_id = fields.Integer(required=False)
+    parenttrip = fields.Nested('self', exclude=(
+        'returntrip', 'company_id', 'contacts_customer', 'contacts_customer_id',), many=False)
 
     tripgroup = fields.Nested(TripGroupSchema)
 
