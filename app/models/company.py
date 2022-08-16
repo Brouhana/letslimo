@@ -19,8 +19,8 @@ class Company(db.Model):
     company_booking_email = db.Column(db.String(120), nullable=False)
     company_phone = db.Column(db.String(120), nullable=False)
 
-    # Stripe connected account
-    stripe_account = db.Column(db.String(255), nullable=True)
+    # Stripe connected account ID
+    connected_account = db.Column(db.String(255), nullable=True)
 
     setting_enabled_auto_invoice = db.Column(db.Boolean, default=False)
     setting_timezone = db.Column(db.String(255), nullable=True)

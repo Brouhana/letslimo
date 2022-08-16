@@ -29,6 +29,7 @@ class ProdConfig(Config):
     DEBUG = False
     TESTING = False
     SQLALCHEMY_DATABASE_URI = environ.get('PROD_DATABASE_URI')
+    STRIPE_API_KEY = environ.get('STRIPE_PROD_API_KEY')
 
 
 class DevConfig(Config):
@@ -37,6 +38,7 @@ class DevConfig(Config):
     TESTING = True
     CORS_ORIGINS = ["http://localhost:3000"]
     SQLALCHEMY_DATABASE_URI = environ.get('DEV_DATABASE_URI')
+    STRIPE_API_KEY = environ.get('STRIPE_TEST_API_KEY')
 
 
 config = {

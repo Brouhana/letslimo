@@ -33,7 +33,8 @@ def init_app(config_name):
         contacts_customers,
         trips,
         invoices,
-        trip_groups
+        trip_groups,
+        driver_payouts
     )
 
     # Initialize extensions

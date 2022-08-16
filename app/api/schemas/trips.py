@@ -52,7 +52,7 @@ class TripSchema(ma.SQLAlchemyAutoSchema):
     pu_flight_code = fields.String(
         required=False, validate=validate.Length(max=6))
     pu_airline = fields.Dict(required=False)
-    do_datetime = fields.DateTime(required=False)
+    do_datetime = fields.String(required=True)
     do_address = fields.String(
         required=False, allow_none=True, validate=validate.Length(max=255))
     do_is_flight = fields.Boolean(required=False, default=False)
